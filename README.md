@@ -16,42 +16,88 @@ API REST desenvolvida em Spring Boot para predição de atrasos de voos. Este pr
 
 - Java 25 ou superior
 - Maven 3.6+
-- Porta 8080 disponível
+- **API Python de Predição** rodando na porta 8000
+
+## ⚠️ IMPORTANTE: Configurar API Python
+
+Este backend depende da API Python de Machine Learning para funcionar. Antes de iniciar o backend, você **DEVE** configurar e rodar a API Python:
+
+### 1. Clone o repositório da API Python
+
+```bash
+git clone https://github.com/RavyBomfim/FlightOnTime-DataScience.git
+cd FlightOnTime-DataScience/API
+```
+
+### 2. Siga as instruções do README do projeto Python
+
+Acesse o README do projeto Python e siga as instruções para:
+
+- Instalar as dependências Python
+- Configurar o ambiente
+- Iniciar o servidor na porta 8000
+
+**Link do projeto:** https://github.com/RavyBomfim/FlightOnTime-DataScience/tree/main/API
+
+### 3. Verifique se a API Python está rodando
+
+```bash
+# Teste se a API Python está respondendo
+curl http://localhost:8000
+```
+
+Somente após a API Python estar rodando, prossiga com a instalação do backend Java abaixo.
 
 ## 🔧 Instalação e Execução
 
-### 1. Clone o repositório
+#### 1. Certifique-se que a API Python está rodando
+
+```bash
+# Navegue até o diretório da API Python
+cd FlightOnTime-DataScience/API
+
+# Siga o README do projeto Python para iniciar o servidor
+# A API deve estar rodando em http://localhost:8000
+```
+
+#### 2. Clone o repositório do Backend
 
 ```bash
 git clone https://github.com/RavyBomfim/FlightOnTime-BackEnd.git
 cd FlightOnTime-BackEnd
 ```
 
-### 2. Compile o projeto
+#### 3. Compile o projeto
 
 **Windows (PowerShell):**
+
 ```powershell
 .\mvnw.cmd clean install
 ```
 
 **Linux/Mac:**
+
 ```bash
 ./mvnw clean install
 ```
 
-### 3. Execute a aplicação
+#### 4. Execute a aplicação
 
 **Windows (PowerShell):**
+
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
 **Linux/Mac:**
+
 ```bash
 ./mvnw spring-boot:run
 ```
 
 A aplicação estará disponível em: `http://localhost:8080`
+
+**Nota:** Certifique-se que a API Python está rodando em `http://localhost:8000` antes de iniciar o backend.
 
 ## 📡 Endpoints da API
 
@@ -68,52 +114,53 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 **Content-Type:** `application/json`
 
 **Body:**
+
 ```json
 {
   "companhia": "GOL",
   "origem": "GRU",
   "destino": "JFK",
-  "dataPartida": "2025-12-15T14:30:00",
-  "distanciaKm": 7800.5
+  "data_partida": "2025-12-15T14:30:00",
+  "distancia_km": 7800
 }
 ```
 
 #### Parâmetros
 
-| Campo | Tipo | Obrigatório | Descrição |
-|-------|------|-------------|-----------|
-| `companhia` | String | Sim | Nome da companhia aérea |
-| `origem` | String | Sim | Código IATA do aeroporto de origem |
-| `destino` | String | Sim | Código IATA do aeroporto de destino |
-| `dataPartida` | DateTime | Sim | Data e hora de partida (formato ISO 8601) |
-| `distanciaKm` | Double | Sim | Distância do voo em quilômetros (deve ser maior que 0) |
+| Campo          | Tipo     | Obrigatório | Descrição                                              |
+| -------------- | -------- | ----------- | ------------------------------------------------------ |
+| `companhia`    | String   | Sim         | Nome da companhia aérea                                |
+| `origem`       | String   | Sim         | Código IATA do aeroporto de origem                     |
+| `destino`      | String   | Sim         | Código IATA do aeroporto de destino                    |
+| `data_partida` | DateTime | Sim         | Data e hora de partida (formato ISO 8601)              |
+| `distancia_km` | Double   | Sim         | Distância do voo em quilômetros (deve ser maior que 0) |
 
 #### Response
 
 **Status:** `200 OK`
 
 **Body:**
+
 ```json
 {
-  "status": "Atrasado",
-  "probabilidade": 0.85,
-  "mensagem": "Alto risco de atraso devido à distância."
+  "status": "Atraso",
+  "probabilidade": 0.57
 }
 ```
 
 **Campos de resposta:**
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `status` | String | Status previsto do voo: "Atrasado" ou "Pontual" |
-| `probabilidade` | Double | Probabilidade de atraso (0.0 a 1.0) |
-| `mensagem` | String | Mensagem explicativa sobre a predição |
+| Campo           | Tipo   | Descrição                                       |
+| --------------- | ------ | ----------------------------------------------- |
+| `status`        | String | Status previsto do voo: "Atrasado" ou "Pontual" |
+| `probabilidade` | Double | Probabilidade de atraso (0.0 a 1.0)             |
 
 ## 🧪 Exemplos de Chamadas
 
 ### Usando cURL
 
 **Voo com alta probabilidade de atraso:**
+
 ```bash
 curl -X POST http://localhost:8080/api/flights/predict \
   -H "Content-Type: application/json" \
@@ -121,12 +168,13 @@ curl -X POST http://localhost:8080/api/flights/predict \
     "companhia": "LATAM",
     "origem": "GRU",
     "destino": "MIA",
-    "dataPartida": "2025-12-20T10:00:00",
-    "distanciaKm": 6500
+    "data_partida": "2025-12-20T10:00:00",
+    "distancia_km": 6500
   }'
 ```
 
 **Voo com baixa probabilidade de atraso:**
+
 ```bash
 curl -X POST http://localhost:8080/api/flights/predict \
   -H "Content-Type: application/json" \
@@ -134,8 +182,8 @@ curl -X POST http://localhost:8080/api/flights/predict \
     "companhia": "Azul",
     "origem": "GRU",
     "destino": "CGH",
-    "dataPartida": "2025-12-18T08:30:00",
-    "distanciaKm": 15.5
+    "data_partida": "2025-12-18T08:30:00",
+    "distancia_km": 15
   }'
 ```
 
@@ -146,8 +194,8 @@ $body = @{
     companhia = "GOL"
     origem = "GRU"
     destino = "BSB"
-    dataPartida = "2025-12-25T16:45:00"
-    distanciaKm = 900
+    data_partida = "2025-12-25T16:45:00"
+    distancia_km = 900
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
@@ -159,22 +207,22 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
 ### Usando JavaScript (Fetch API)
 
 ```javascript
-fetch('http://localhost:8080/api/flights/predict', {
-  method: 'POST',
+fetch("http://localhost:8080/api/flights/predict", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    companhia: 'Azul',
-    origem: 'GRU',
-    destino: 'REC',
-    dataPartida: '2025-12-30T11:20:00',
-    distanciaKm: 2130.8
-  })
+    companhia: "Azul",
+    origem: "GRU",
+    destino: "REC",
+    data_partida: "2025-12-30T11:20:00",
+    distancia_km: 2130,
+  }),
 })
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Erro:', error));
+  .then((response) => response.json())
+  .then((data) => console.log(data))
+  .catch((error) => console.error("Erro:", error));
 ```
 
 ### Usando Python (requests)
@@ -189,8 +237,8 @@ data = {
     "companhia": "LATAM",
     "origem": "GRU",
     "destino": "FOR",
-    "dataPartida": "2025-12-22T13:15:00",
-    "distanciaKm": 2520.3
+    "data_partida": "2025-12-22T13:15:00",
+    "distancia_km": 2520
 }
 
 response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -206,6 +254,7 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
 **Status:** `400 Bad Request`
 
 **Exemplo de erro:**
+
 ```json
 {
   "type": "about:blank",
@@ -215,7 +264,7 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
   "instance": "/api/flights/predict",
   "errors": {
     "companhia": "A companhia aérea é obrigatória",
-    "distanciaKm": "A distância deve ser maior que 0"
+    "distancia_km": "A distância deve ser maior que 0"
   }
 }
 ```
@@ -225,8 +274,8 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
 - **companhia:** "A companhia aérea é obrigatória"
 - **origem:** "O aeroporto de origem é obrigatório"
 - **destino:** "O aeroporto de destino é obrigatório"
-- **dataPartida:** "A data de partida é obrigatória"
-- **distanciaKm:** "A distância é obrigatória" ou "A distância deve ser maior que 0"
+- **data_partida:** "A data de partida é obrigatória"
+- **distancia_km:** "A distância é obrigatória" ou "A distância deve ser maior que 0"
 
 ## 🔍 Como Funciona
 
@@ -254,6 +303,7 @@ DTOs (FlightRequestDTO / FlightResponseDTO)
 ### CORS
 
 A aplicação está configurada para aceitar requisições das seguintes origens:
+
 - `http://localhost:3000` (React - Create React App)
 - `http://localhost:5173` (Vite)
 
@@ -269,6 +319,31 @@ server.port=8080
 server.error.include-message=always
 server.error.include-binding-errors=always
 spring.mvc.problemdetails.enabled=true
+
+# Python API Configuration
+python.api.url=http://localhost:8000
+python.api.timeout=30
+```
+
+### Variáveis de Ambiente (Docker)
+
+Ao executar com Docker, você pode configurar as seguintes variáveis:
+
+| Variável             | Padrão                  | Descrição                               |
+| -------------------- | ----------------------- | --------------------------------------- |
+| `PYTHON_API_URL`     | `http://localhost:8000` | URL da API Python de predição           |
+| `PYTHON_API_TIMEOUT` | `30`                    | Timeout em segundos para chamadas à API |
+| `JAVA_OPTS`          | `-Xmx512m -Xms256m`     | Opções da JVM (memória, GC, etc.)       |
+
+**Exemplo de uso:**
+
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e PYTHON_API_URL=http://python-api:8000 \
+  -e PYTHON_API_TIMEOUT=60 \
+  -e JAVA_OPTS="-Xmx1g -Xms512m" \
+  flightontime-backend
 ```
 
 ### Alterar a Porta
@@ -292,15 +367,20 @@ O Spring Actuator está habilitado. Endpoints de monitoramento disponíveis:
 src/main/java/com/flightontime/api/
 ├── FlightOnTimeApplication.java    # Classe principal
 ├── config/
-│   └── CorsConfig.java             # Configuração de CORS
+│   ├── CorsConfig.java             # Configuração de CORS
+│   └── RestClientConfig.java       # Configuração do RestClient
 ├── controller/
 │   └── FlightController.java       # Controlador REST
 ├── dto/
 │   ├── FlightRequestDTO.java       # DTO de requisição
 │   └── FlightResponseDTO.java      # DTO de resposta
 └── service/
-    └── PredictionService.java      # Lógica de predição
+    └── PredictionService.java      # Lógica de predição e integração com Python
 ```
+
+### Health Check
+
+O container inclui health check automático que verifica o endpoint `/actuator/health` a cada 30 segundos.
 
 ## 🤝 Contribuindo
 

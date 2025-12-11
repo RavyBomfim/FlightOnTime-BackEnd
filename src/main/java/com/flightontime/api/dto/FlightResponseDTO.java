@@ -1,6 +1,6 @@
 package com.flightontime.api.dto;
 
 public record FlightResponseDTO(
-                String status,
+                String previsao,
                 Double probabilidade) {
 }

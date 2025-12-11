@@ -17,10 +17,10 @@ public record FlightRequestDTO(
         String destino,
 
         @NotNull(message = "A data de partida é obrigatória")
-        LocalDateTime dataPartida,
+        LocalDateTime data_partida,
 
         @NotNull(message = "A distância é obrigatória")
         @Min(value = 1, message = "A distância deve ser maior que 0")
-        Double distanciaKm
+        Double distancia_km
 ) {
 }
