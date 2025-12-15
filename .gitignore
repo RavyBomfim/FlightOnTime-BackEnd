@@ -38,3 +38,6 @@ Dockerfile
 .docker-compose.yml
 docker-compose.yml
 DOCKER_NETWORKING.md
+
+projeto.txt
+.github/java-upgrade
