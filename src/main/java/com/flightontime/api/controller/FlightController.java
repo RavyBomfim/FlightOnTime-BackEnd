@@ -25,9 +25,4 @@ public class FlightController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/health")
-    public String health() {
-    return "API FlightOnTime está ON!"; // validacao de funcionamento da API
-}
-
 }
