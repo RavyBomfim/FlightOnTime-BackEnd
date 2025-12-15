@@ -18,6 +18,8 @@ public class PredictionService {
     private final RestClient pythonApiClient;
 
     public FlightResponseDTO predict(FlightRequestDTO flightRequestDTO) {
+        
+        // todo substituir o Map pelo FlightRequestDTO record
         Map<String, Object> payload = Map.of(
                 "companhia", flightRequestDTO.companhia(),
                 "origem", flightRequestDTO.origem(),
