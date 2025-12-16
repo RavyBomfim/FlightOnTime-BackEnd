@@ -8,12 +8,15 @@ import com.flightontime.api.integration.prediction.dto.PredictionRequest;
 import com.flightontime.api.integration.prediction.dto.PredictionResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 
@@ -22,8 +25,8 @@ public class PredictionService {
     private final PredictionClient predictionClient;
 
     public FlightResponseDTO predict(FlightRequestDTO flightRequestDTO) {
+        log.info("Recebendo requisição de predição: {}", flightRequestDTO);
 
-        // todo substituir o Map pelo FlightRequestDTO record
         PredictionRequest payload = new PredictionRequest(
                 flightRequestDTO.companhia(),
                 flightRequestDTO.origem(),
@@ -32,8 +35,9 @@ public class PredictionService {
                 flightRequestDTO.distancia_km()
             );
 
-        
+        log.debug("Enviando payload para API Python: {}", payload);
         PredictionResponse response = predictionClient.predict(payload);
+        log.info("Predição recebida: {}", response);
             
             
             return new FlightResponseDTO(

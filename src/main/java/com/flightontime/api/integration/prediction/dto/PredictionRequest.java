@@ -8,6 +8,6 @@ public record PredictionRequest(
     String origem,
     String destino,
     @JsonProperty("data_partida") String dataPartida,
-    @JsonProperty("distancia_Km") Double distanciaKm
+    @JsonProperty("distancia_Km") Double distancia_km
 
 ){}
