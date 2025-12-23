@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,14 +28,14 @@ public class Flight {
     @Column(nullable = false)
     private String destination;
 
-    @Column(name = "distance_km", nullable = false)
-    private Integer distanceKm;
+    @Column(nullable = false)
+    private LocalDate scheduledDepartureDate;
 
     @Column(nullable = false)
-    private LocalDateTime scheduledDeparture;
+    private int dayOfWeek;
 
     @Column(nullable = false)
-    private LocalDateTime scheduledArrival;
+    private int scheduledDepartureTimeInMinutes;
 
     @Column(length = 1000)
     private String predictionResult;

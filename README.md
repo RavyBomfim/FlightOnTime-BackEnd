@@ -105,6 +105,100 @@ A aplicação estará disponível em: `http://localhost:8080`
 
 Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
+### GET /api/flights
+
+Retorna a lista de todos os voos cadastrados no banco de dados, ordenados do mais recente para o mais antigo.
+
+**URL:** `http://localhost:8080/api/flights`
+
+**Method:** `GET`
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 10,
+    "airline": "Azul",
+    "origin": "SSA",
+    "destination": "GRU",
+    "distanceKm": 1960,
+    "scheduledDeparture": "2025-12-26T06:00:00",
+    "scheduledArrival": "2025-12-26T08:40:00",
+    "predictionResult": "Pontual",
+    "predictionProbability": 0.81,
+    "createdAt": "2025-12-22T16:22:42.876429",
+    "updatedAt": "2025-12-22T16:22:42.876429"
+  }
+]
+```
+
+### GET /api/flights/{id}
+
+Busca um voo específico pelo ID.
+
+**URL:** `http://localhost:8080/api/flights/1`
+
+**Method:** `GET`
+
+**Response:** `200 OK`
+
+### GET /api/flights/search/origin?origin={code}
+
+Busca voos por aeroporto de origem (ex: GRU, CGH, SDU).
+
+**URL:** `http://localhost:8080/api/flights/search/origin?origin=GRU`
+
+**Method:** `GET`
+
+### GET /api/flights/search/destination?destination={code}
+
+Busca voos por aeroporto de destino.
+
+**URL:** `http://localhost:8080/api/flights/search/destination?destination=BSB`
+
+**Method:** `GET`
+
+### GET /api/flights/search/ontime
+
+Retorna todos os voos com predição de pontualidade (ontime).
+
+**URL:** `http://localhost:8080/api/flights/search/ontime`
+
+**Method:** `GET`
+
+### GET /api/flights/search/route?origin={code}&destination={code}
+
+Busca voos por rota específica (origem e destino).
+
+**URL:** `http://localhost:8080/api/flights/search/route?origin=GRU&destination=CGH`
+
+**Method:** `GET`
+
+### GET /api/flights/search/delayed
+
+Retorna todos os voos com predição de atraso.
+
+**URL:** `http://localhost:8080/api/flights/search/delayed`
+
+**Method:** `GET`
+
+### DELETE /api/flights/{id}
+
+Remove um voo do banco de dados.
+
+**URL:** `http://localhost:8080/api/flights/1`
+
+**Method:** `DELETE`
+
+**Response:** `204 No Content`
+
+---
+
+### POST /api/flights/predict - Detalhes
+
+Realiza a predição de atraso de um voo com base nos dados fornecidos.
+
 #### Request
 
 **URL:** `http://localhost:8080/api/flights/predict`

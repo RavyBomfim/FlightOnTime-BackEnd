@@ -33,9 +33,8 @@ public class FlightService {
         return flightRepository.findByDestination(destination);
     }
 
-    public List<Flight> getFlightsByPredictionResult(String status) {
-        String result = status.substring(0, 1).toUpperCase(Locale.ROOT) + status.substring(1).toLowerCase(Locale.ROOT);
-        return flightRepository.findByPredictionResult(result);
+    public List<Flight> getOntimeFlights() {
+        return flightRepository.findOntimeFlights();
     }
 
     public List<Flight> getFlightsByRoute(String origin, String destination) {

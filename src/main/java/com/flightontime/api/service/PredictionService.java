@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,12 +24,19 @@ public class PredictionService {
     public FlightResponseDTO predict(FlightRequestDTO flightRequestDTO) {
         log.info("Recebendo requisição de predição: {}", flightRequestDTO);
 
+        int timeInMinutes = flightRequestDTO.scheduledDepartureTime().getHour() * 60
+                + flightRequestDTO.scheduledDepartureTime().getMinute();
+
+        // Obter o dia da semana (1 = Segunda, 7 = Domingo)
+        int dayOfWeek = flightRequestDTO.scheduledDepartureDate().getDayOfWeek().getValue();
+
         PredictionRequest payload = new PredictionRequest(
-                flightRequestDTO.companhia(),
-                flightRequestDTO.origem(),
-                flightRequestDTO.destino(),
-                flightRequestDTO.data_partida().toString(),
-                flightRequestDTO.distancia_km());
+                flightRequestDTO.airline(),
+                flightRequestDTO.origin(),
+                flightRequestDTO.destination(),
+                flightRequestDTO.scheduledDepartureDate(),
+                dayOfWeek,
+                timeInMinutes);
 
         log.debug("Enviando payload para API Python: {}", payload);
         PredictionResponse response = predictionClient.predict(payload);
@@ -39,20 +44,20 @@ public class PredictionService {
 
         // Salvar no banco de dados
         Flight flight = new Flight();
-        flight.setAirline(flightRequestDTO.companhia());
-        flight.setOrigin(flightRequestDTO.origem());
-        flight.setDestination(flightRequestDTO.destino());
-        flight.setDistanceKm(flightRequestDTO.distancia_km().intValue());
-        flight.setScheduledDeparture(flightRequestDTO.data_partida());
-        flight.setScheduledArrival(flightRequestDTO.data_partida().plusHours(2)); // Estimativa
-        flight.setPredictionResult(response.previsao());
-        flight.setPredictionProbability(response.probabilidade());
+        flight.setAirline(flightRequestDTO.airline());
+        flight.setOrigin(flightRequestDTO.origin());
+        flight.setDestination(flightRequestDTO.destination());
+        flight.setScheduledDepartureDate(flightRequestDTO.scheduledDepartureDate());
+        flight.setDayOfWeek(dayOfWeek);
+        flight.setScheduledDepartureTimeInMinutes(timeInMinutes);
+        flight.setPredictionResult(String.valueOf(response.predictionResult()));
+        flight.setPredictionProbability(response.predictionProbability());
 
         Flight savedFlight = flightRepository.save(flight);
         log.info("Voo salvo no banco de dados com ID: {}", savedFlight.getId());
 
         return new FlightResponseDTO(
-                response.previsao(),
-                response.probabilidade());
+                response.predictionResult(),
+                response.predictionProbability());
     }
 }

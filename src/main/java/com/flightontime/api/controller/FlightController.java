@@ -62,10 +62,10 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getFlightsByDestination(destination));
     }
 
-    @GetMapping("/search/prediction")
-    @Operation(summary = "Buscar voos por resultado de predição", description = "Retorna voos com resultado específico. Valores: 'Atraso' ou 'Pontual'")
-    public ResponseEntity<List<Flight>> getFlightsByPredictionResult(@RequestParam String result) {
-        return ResponseEntity.ok(flightService.getFlightsByPredictionResult(result));
+    @GetMapping("/search/ontime")
+    @Operation(summary = "Buscar voos pontuais", description = "Retorna todos os voos com predição 'Pontual'")
+    public ResponseEntity<List<Flight>> getOntimeFlights() {
+        return ResponseEntity.ok(flightService.getOntimeFlights());
     }
 
     @GetMapping("/search/route")

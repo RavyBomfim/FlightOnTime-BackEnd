@@ -29,4 +29,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
 
     @Query("SELECT f FROM Flight f WHERE f.predictionResult = 'Atraso' ORDER BY f.createdAt DESC")
     List<Flight> findDelayedFlights();
+
+    @Query("SELECT f FROM Flight f WHERE f.predictionResult = 'Pontual' ORDER BY f.createdAt DESC")
+    List<Flight> findOntimeFlights();
 }
