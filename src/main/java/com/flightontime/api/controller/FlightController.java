@@ -82,6 +82,17 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getDelayedFlights());
     }
 
+    @GetMapping("/stats")
+    @Operation(summary = "Estatísticas de voos", 
+               description = "Retorna estatísticas agregadas incluindo % de voos atrasados por data, companhia, origem/destino")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estatísticas calculadas com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro ao calcular estatísticas")
+    })
+    public ResponseEntity<com.flightontime.api.dto.FlightStatsDTO> getStats() {
+        return ResponseEntity.ok(flightService.getFlightStats());
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar voo", description = "Remove um voo do banco de dados")
     public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {

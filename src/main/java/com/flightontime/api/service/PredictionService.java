@@ -1,5 +1,8 @@
 package com.flightontime.api.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
+
 import com.flightontime.api.dto.FlightRequestDTO;
 import com.flightontime.api.dto.FlightResponseDTO;
 import com.flightontime.api.entity.Flight;
@@ -11,53 +14,54 @@ import com.flightontime.api.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.stereotype.Service;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PredictionService {
 
-    private final PredictionClient predictionClient;
-    private final FlightRepository flightRepository;
+        private final PredictionClient predictionClient;
+        private final FlightRepository flightRepository;
 
-    public FlightResponseDTO predict(FlightRequestDTO flightRequestDTO) {
-        log.info("Recebendo requisição de predição: {}", flightRequestDTO);
+        @CacheEvict(value = "flightStats", allEntries = true)
+        public FlightResponseDTO predict(FlightRequestDTO flightRequestDTO) {
+                log.info("Recebendo requisição de predição: {}", flightRequestDTO);
 
-        int timeInMinutes = flightRequestDTO.scheduledDepartureTime().getHour() * 60
-                + flightRequestDTO.scheduledDepartureTime().getMinute();
+                // Calcular horário em minutos desde meia-noite
+                int timeInMinutes = flightRequestDTO.scheduledDeparture().getHour() * 60
+                                + flightRequestDTO.scheduledDeparture().getMinute();
 
-        // Obter o dia da semana (1 = Segunda, 7 = Domingo)
-        int dayOfWeek = flightRequestDTO.scheduledDepartureDate().getDayOfWeek().getValue();
+                // Obter o dia da semana (1 = Segunda, 7 = Domingo)
+                int dayOfWeek = flightRequestDTO.scheduledDeparture().getDayOfWeek().getValue();
 
-        PredictionRequest payload = new PredictionRequest(
-                flightRequestDTO.airline(),
-                flightRequestDTO.origin(),
-                flightRequestDTO.destination(),
-                flightRequestDTO.scheduledDepartureDate(),
-                dayOfWeek,
-                timeInMinutes);
+                PredictionRequest payload = new PredictionRequest(
+                                flightRequestDTO.airline(),
+                                flightRequestDTO.origin(),
+                                flightRequestDTO.destination(),
+                                flightRequestDTO.scheduledDeparture().toLocalDate(),
+                                dayOfWeek,
+                                timeInMinutes);
 
-        log.debug("Enviando payload para API Python: {}", payload);
-        PredictionResponse response = predictionClient.predict(payload);
-        log.info("Predição recebida: {}", response);
+                log.debug("Enviando payload para API Python: {}", payload);
+                PredictionResponse response = predictionClient.predict(payload);
+                log.info("Predição recebida: {}", response);
+                String predictionResultText = response.predictionResult() ? "Atrasado" : "Pontual";
 
-        // Salvar no banco de dados
-        Flight flight = new Flight();
-        flight.setAirline(flightRequestDTO.airline());
-        flight.setOrigin(flightRequestDTO.origin());
-        flight.setDestination(flightRequestDTO.destination());
-        flight.setScheduledDepartureDate(flightRequestDTO.scheduledDepartureDate());
-        flight.setDayOfWeek(dayOfWeek);
-        flight.setScheduledDepartureTimeInMinutes(timeInMinutes);
-        flight.setPredictionResult(String.valueOf(response.predictionResult()));
-        flight.setPredictionProbability(response.predictionProbability());
+                // Salvar no banco de dados
+                Flight flight = new Flight();
+                flight.setAirline(flightRequestDTO.airline());
+                flight.setOrigin(flightRequestDTO.origin());
+                flight.setDestination(flightRequestDTO.destination());
+                flight.setScheduledDepartureDate(flightRequestDTO.scheduledDeparture().toLocalDate());
+                flight.setDayOfWeek(dayOfWeek);
+                flight.setScheduledDepartureTimeInMinutes(timeInMinutes);
+                flight.setPredictionResult(predictionResultText);
+                flight.setPredictionProbability(response.predictionProbability());
 
-        Flight savedFlight = flightRepository.save(flight);
-        log.info("Voo salvo no banco de dados com ID: {}", savedFlight.getId());
+                Flight savedFlight = flightRepository.save(flight);
+                log.info("Voo salvo no banco de dados com ID: {}", savedFlight.getId());
 
-        return new FlightResponseDTO(
-                response.predictionResult(),
-                response.predictionProbability());
-    }
+                return new FlightResponseDTO(
+                                response.predictionResult(),
+                                response.predictionProbability());
+        }
 }
