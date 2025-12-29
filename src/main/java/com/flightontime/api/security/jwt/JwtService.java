@@ -12,7 +12,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "secret-key-flighontime";
+    private static final String SECRET_KEY = "${jwt.secret}";
 
     public String generateToken(UserEntity user) {
         return Jwts.builder()
