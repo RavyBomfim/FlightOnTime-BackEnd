@@ -9,7 +9,7 @@ import com.flightontime.api.dto.auth.LoginRequestDTO;
 import com.flightontime.api.dto.auth.LoginResponseDTO;
 import com.flightontime.api.service.IAuthService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

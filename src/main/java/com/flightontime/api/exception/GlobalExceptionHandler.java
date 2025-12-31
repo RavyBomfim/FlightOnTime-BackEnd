@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -67,5 +68,16 @@ public class GlobalExceptionHandler {
                                                 "erro", "Corpo da requisição inválido",
                                                 "detalhes", "Verifique o formato dos campos enviados"));
         }
+
+        @ExceptionHandler(ResponseStatusException.class)
+        public ResponseEntity<Object> handleResponseStatus(ResponseStatusException ex) {
+                return ResponseEntity
+                                .status(ex.getStatusCode())
+                                .body(Map.of(
+                                                "status", ex.getStatusCode().value(),
+                                                "erro", ex.getReason(),
+                                                "timestamp", LocalDateTime.now()));
+}
+
 
 }

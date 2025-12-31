@@ -20,15 +20,15 @@ public class AuthService implements IAuthService {
     private final JwtService jwtService;
 
     @Override
-    public LoginResponseDTO login(LoginRequestDTO dto) {
+    public LoginResponseDTO login(LoginRequestDTO request) {
 
-        UserEntity user = userRepository.findByEmail(dto.email())
+        UserEntity user = userRepository.findByEmail(request.email())
             .orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado")
+                new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos")
             );
 
-        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas");
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos");
         }
 
         return new LoginResponseDTO(
