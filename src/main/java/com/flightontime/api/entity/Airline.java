@@ -1,8 +1,5 @@
 package com.flightontime.api.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,39 +12,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "flights")
+@Table(name = "airlines")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Flight {
-
+public class Airline {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String airline;
+    private String airlineCode;
 
     @Column(nullable = false)
-    private String origin;
-
-    @Column(nullable = false)
-    private String destination;
-
-    @Column(nullable = false)
-    private LocalDate scheduledDepartureDate;
-
-    @Column(nullable = false)
-    private int dayOfWeek;
-
-    @Column(nullable = false)
-    private int distanceKm;
-
-    @Column(length = 1000)
-    private String predictionResult;
-
-    private Double predictionProbability;
+    private String airlineName;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

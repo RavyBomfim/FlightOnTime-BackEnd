@@ -9,7 +9,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flightontime.api.constants.FlightConstants;
 import com.flightontime.api.dto.FlightStatsDTO;
 import com.flightontime.api.dto.OverallStats;
 import com.flightontime.api.dto.StatsByAirline;
@@ -79,8 +78,8 @@ public class FlightService {
 
                 // Calculate overall stats using simple count queries
                 long totalFlights = flightRepository.countAllFlights();
-                long delayedFlights = flightRepository.countByStatus(FlightConstants.STATUS_DELAYED);
-                long ontimeFlights = flightRepository.countByStatus(FlightConstants.STATUS_ON_TIME);
+                long delayedFlights = flightRepository.countByStatus("Atrasado");
+                long ontimeFlights = flightRepository.countByStatus("Pontual");
                 double delayPercentage = totalFlights > 0 ? (delayedFlights * 100.0 / totalFlights) : 0.0;
 
                 OverallStats overallStats = new OverallStats(
@@ -88,7 +87,7 @@ public class FlightService {
 
                 // Calculate stats by date using database aggregation
                 List<StatsByDate> statsByDate = flightRepository
-                                .findStatsGroupedByDate(FlightConstants.STATUS_DELAYED)
+                                .findStatsGroupedByDate("Atrasado")
                                 .stream()
                                 .map(result -> {
                                         LocalDate date = (LocalDate) result[0];
@@ -101,7 +100,7 @@ public class FlightService {
 
                 // Calculate stats by airline using database aggregation
                 List<StatsByAirline> statsByAirline = flightRepository
-                                .findStatsGroupedByAirline(FlightConstants.STATUS_DELAYED)
+                                .findStatsGroupedByAirline("Atrasado")
                                 .stream()
                                 .map(result -> {
                                         String airline = (String) result[0];
@@ -114,7 +113,7 @@ public class FlightService {
 
                 // Calculate stats by origin using database aggregation
                 List<StatsByOrigin> statsByOrigin = flightRepository
-                                .findStatsGroupedByOrigin(FlightConstants.STATUS_DELAYED)
+                                .findStatsGroupedByOrigin("Atrasado")
                                 .stream()
                                 .map(result -> {
                                         String origin = (String) result[0];
@@ -127,7 +126,7 @@ public class FlightService {
 
                 // Calculate stats by destination using database aggregation
                 List<StatsByDestination> statsByDestination = flightRepository
-                                .findStatsGroupedByDestination(FlightConstants.STATUS_DELAYED)
+                                .findStatsGroupedByDestination("Atrasado")
                                 .stream()
                                 .map(result -> {
                                         String destination = (String) result[0];
@@ -140,7 +139,7 @@ public class FlightService {
 
                 // Calculate stats by route using database aggregation
                 List<StatsByRoute> statsByRoute = flightRepository
-                                .findStatsGroupedByRoute(FlightConstants.STATUS_DELAYED)
+                                .findStatsGroupedByRoute("Atrasado")
                                 .stream()
                                 .map(result -> {
                                         String origin = (String) result[0];

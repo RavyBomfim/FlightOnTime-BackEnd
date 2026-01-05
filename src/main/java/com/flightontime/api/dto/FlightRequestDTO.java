@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public record FlightRequestDTO(
-                @NotBlank(message = "A companhia aérea é obrigatória") @Size(min = 2, max = 100, message = "O nome da companhia aérea deve pelo menos 2 caracteres") @JsonProperty("companhia") String airline,
+                @NotBlank(message = "A companhia aérea é obrigatória") @Size(min = 3, max = 3, message = "O nome da companhia aérea deve ter 3 caracteres") @JsonProperty("companhia") String airline,
 
                 @NotBlank(message = "O aeroporto de origem é obrigatório") @Size(min = 4, max = 4, message = "O código do aeroporto de origem deve ter 4 caracteres") @JsonProperty("origem") String origin,
 
