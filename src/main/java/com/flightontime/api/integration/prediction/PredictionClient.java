@@ -38,15 +38,10 @@ public class PredictionClient {
                                                         })
                                         .body(PredictionResponse.class);
 
-                } catch (ResourceAccessException e) {
-                        log.error("API de predição fora do ar", e);
-                        throw new PredictionServiceException(
-                                        "Não foi possível conectar ao serviço de predição");
-
                 } catch (Exception e) {
-                        log.error("Erro inesperado ao chamar serviço de predição", e);
+                        log.error("Erro ao chamar serviço de predição", e);
                         throw new PredictionServiceException(
-                                        "Erro ao processar a predição");
+                                        "Erro ao processar a predição: " + e.getMessage());
                 }
         }
 }
