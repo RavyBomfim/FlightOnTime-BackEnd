@@ -99,19 +99,125 @@ A aplicação estará disponível em: `http://localhost:8080`
 
 **Nota:** Certifique-se que a API Python está rodando em `http://localhost:8000` antes de iniciar o backend.
 
-## 📡 Endpoints da API
+## � Autenticação
+
+Esta API utiliza autenticação JWT (JSON Web Token). Para acessar os endpoints protegidos, você precisa:
+
+1. **Registrar um usuário** (endpoint público)
+2. **Fazer login** para obter o token JWT (endpoint público)
+3. **Usar o token** no header `Authorization` para acessar os endpoints protegidos
+
+### Endpoints Públicos (Sem Autenticação)
+
+- `POST /api/auth/register` - Registrar novo usuário
+- `POST /api/auth/login` - Fazer login e obter token JWT
+- `GET /h2-console/**` - Console do banco de dados H2 (apenas desenvolvimento)
+
+### Endpoints Protegidos (Requerem JWT)
+
+- Todos os endpoints `/api/flights/**` requerem autenticação
+
+### 1. Registrar Usuário
+
+**Endpoint:** `POST /api/auth/register`
+
+**Request:**
+```json
+{
+  "email": "seu@email.com",
+  "password": "suaSenha123"
+}
+```
+
+**Response:** `200 OK`
+```json
+"Usuário registrado com sucesso!"
+```
+
+### 2. Fazer Login
+
+**Endpoint:** `POST /api/auth/login`
+
+**Request:**
+```json
+{
+  "email": "seu@email.com",
+  "password": "suaSenha123"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Nota:** Copie o token retornado para usar nas próximas requisições.
+
+### 3. Usar o Token nas Requisições
+
+Adicione o token no header `Authorization` com o prefixo `Bearer`:
+
+```bash
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Exemplo com cURL:**
+```bash
+curl -X POST http://localhost:8080/api/flights/predict \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -d '{
+    "airline": "GOL",
+    "originIcao": "SBGR",
+    "destinationIcao": "SBBR",
+    "scheduledDeparture": "2026-01-15T14:30:00"
+  }'
+```
+
+**Exemplo com PowerShell:**
+```powershell
+$headers = @{
+    "Content-Type" = "application/json"
+    "Authorization" = "Bearer SEU_TOKEN_AQUI"
+}
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
+    -Method POST `
+    -Headers $headers `
+    -Body '{"airline":"GOL","originIcao":"SBGR","destinationIcao":"SBBR","scheduledDeparture":"2026-01-15T14:30:00"}'
+```
+
+### Segurança
+
+- Tokens JWT expiram em **1 hora**
+- Senhas são armazenadas com **BCrypt** (hash seguro)
+- Rate limiting: **10 requisições por minuto por IP**
+- CORS configurado para permitir origens específicas
+
+## �📡 Endpoints da API
 
 ### POST /api/flights/predict
+
+**⚠️ Requer autenticação JWT**
 
 Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 ### GET /api/flights
+
+**⚠️ Requer autenticação JWT**
 
 Retorna a lista de todos os voos cadastrados no banco de dados, ordenados do mais recente para o mais antigo.
 
 **URL:** `http://localhost:8080/api/flights`
 
 **Method:** `GET`
+
+**Headers:**
+```
+Authorization: Bearer {seu_token_jwt}
+```
 
 **Response:** `200 OK`
 
@@ -197,6 +303,8 @@ Remove um voo do banco de dados.
 
 ### POST /api/flights/predict - Detalhes
 
+**⚠️ Requer autenticação JWT**
+
 Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 #### Request
@@ -205,27 +313,31 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 **Method:** `POST`
 
-**Content-Type:** `application/json`
+**Headers:**
+```
+Content-Type: application/json
+Authorization: Bearer {seu_token_jwt}
+```
 
 **Body:**
 
 ```json
 {
-  "companhia": "GOL",
-  "origem": "SBGR",
-  "destino": "SBBR",
-  "data_partida": "2025-12-15T14:30:00"
+  "airline": "GOL",
+  "originIcao": "SBGR",
+  "destinationIcao": "SBBR",
+  "scheduledDeparture": "2026-01-15T14:30:00"
 }
 ```
 
 #### Parâmetros
 
-| Campo          | Tipo     | Obrigatório | Descrição                                                          |
-| -------------- | -------- | ----------- | ------------------------------------------------------------------ |
-| `companhia`    | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, TAM, AZU        |
-| `origem`       | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR  |
-| `destino`      | String   | Sim         | Código ICAO do aeroporto de destino (4 caracteres). Ex: SBSP, SBGL |
-| `data_partida` | DateTime | Sim         | Data e hora de partida (formato ISO 8601)                          |
+| Campo                  | Tipo     | Obrigatório | Descrição                                                          |
+| ---------------------- | -------- | ----------- | ------------------------------------------------------------------ |
+| `airline`              | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, LATAM, Azul    |
+| `originIcao`           | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR  |
+| `destinationIcao`      | String   | Sim         | Código ICAO do aeroporto de destino (4 caracteres). Ex: SBSP, SBGL |
+| `scheduledDeparture`   | DateTime | Sim         | Data e hora de partida (formato ISO 8601)                          |
 
 **Nota:** A distância entre aeroportos é calculada automaticamente usando a fórmula de Haversine com base nas coordenadas geográficas.
 
@@ -269,48 +381,112 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 ## 🧪 Exemplos de Chamadas
 
-### Usando cURL
+### 1. Registrar Usuário
+
+**cURL:**
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "teste@email.com",
+    "password": "senha123"
+  }'
+```
+
+**PowerShell:**
+```powershell
+$body = @{
+    email = "teste@email.com"
+    password = "senha123"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/auth/register" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+### 2. Fazer Login e Obter Token
+
+**cURL:**
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "teste@email.com",
+    "password": "senha123"
+  }'
+```
+
+**PowerShell:**
+```powershell
+$body = @{
+    email = "teste@email.com"
+    password = "senha123"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body $body
+
+# Salvar o token para usar nas próximas requisições
+$token = $response.token
+Write-Host "Token: $token"
+```
+
+### 3. Fazer Predição de Voo (Com Token)
 
 **Voo com alta probabilidade de atraso:**
 
+**cURL:**
 ```bash
+# Substitua SEU_TOKEN_AQUI pelo token recebido no login
 curl -X POST http://localhost:8080/api/flights/predict \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{
-    "companhia": "GOL",
-    "origem": "SBGL",
-    "destino": "SBGR",
-    "data_partida": "2025-12-20T18:00:00"
+    "airline": "GOL",
+    "originIcao": "SBGL",
+    "destinationIcao": "SBGR",
+    "scheduledDeparture": "2026-01-20T18:00:00"
   }'
+```
+
+**PowerShell:**
+```bash
+# Usando o token salvo anteriormente
+$headers = @{
+    "Content-Type" = "application/json"
+    "Authorization" = "Bearer $token"
+}
+
+$body = @{
+    airline = "GOL"
+    originIcao = "SBGL"
+    destinationIcao = "SBGR"
+    scheduledDeparture = "2026-01-20T18:00:00"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
+  -Method POST `
+  -Headers $headers `
+  -Body $body
 ```
 
 **Voo com baixa probabilidade de atraso:**
 
+**cURL:**
 ```bash
 curl -X POST http://localhost:8080/api/flights/predict \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{
-    "companhia": "AZU",
-    "origem": "SBGR",
-    "destino": "SBSP",
-    "data_partida": "2025-12-18T08:30:00"
+    "airline": "Azul",
+    "originIcao": "SBGR",
+    "destinationIcao": "SBSP",
+    "scheduledDeparture": "2026-01-18T08:30:00"
   }'
-```
-
-### Usando PowerShell
-
-```powershell
-$body = @{
-    companhia = "GOL"
-    origem = "SBGR"
-    destino = "SBBR"
-    data_partida = "2025-12-25T16:45:00"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
-  -Method Post `
-  -ContentType "application/json" `
-  -Body $body
 ```
 
 ### Usando JavaScript (Fetch API)
