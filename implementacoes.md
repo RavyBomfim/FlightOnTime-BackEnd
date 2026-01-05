@@ -13,6 +13,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Descrição:** Predição de atraso de voos com integração à API Python de Machine Learning
 
 **Funcionalidades:**
+
 - Validação de formato dos códigos (companhia: 3 caracteres, aeroportos: 4 caracteres)
 - Validação de existência de companhia aérea no banco de dados
 - Validação de existência de aeroportos de origem e destino no banco de dados
@@ -29,6 +30,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Descrição:** Retorna estatísticas agregadas de voos
 
 **Funcionalidades:**
+
 - Estatísticas gerais (total de voos, atrasados, pontuais, %)
 - Estatísticas por data
 - Estatísticas por companhia aérea
@@ -43,6 +45,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO
 
 **Detalhes:**
+
 - Banco H2 em memória para desenvolvimento
 - Entidades: Flight, Airport, Airline
 - Repositories com Spring Data JPA
@@ -54,6 +57,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO
 
 **Endpoints disponíveis:**
+
 - `GET /api/flights` - Lista todos os voos
 - `GET /api/flights/{id}` - Busca voo por ID
 - `GET /api/flights/search/origin?origin={code}` - Busca por origem
@@ -68,6 +72,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO
 
 **Detalhes:**
+
 - Integração com OpenMeteo API
 - Busca condições meteorológicas por coordenadas geográficas
 - Retorna temperatura, precipitação e velocidade do vento
@@ -78,6 +83,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO
 
 **Detalhes:**
+
 - Documentação interativa disponível em `/swagger-ui.html`
 - Todas as APIs documentadas com descrições e exemplos
 - Schemas de request/response detalhados
@@ -87,6 +93,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO
 
 **Detalhes:**
+
 - Dockerfile multi-stage para otimização
 - docker-compose.yml para orquestração
 - Documentação em DOCKER_NETWORKING.md
@@ -103,6 +110,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Descrição:** Adicionar mais exemplos práticos de uso
 
 **Pendente:**
+
 - ✅ Exemplos básicos de cURL adicionados
 - ✅ Exemplos PowerShell adicionados
 - ✅ Exemplos JavaScript adicionados
@@ -115,6 +123,7 @@ Este documento contém o status das implementações do projeto FlightOnTime-Bac
 **Status:** IMPLEMENTADO ✅
 
 **Detalhes:**
+
 - ✅ Validação de formato (tamanhos de campos)
 - ✅ Validação de existência (banco de dados)
 - ✅ Mensagens de erro claras e específicas

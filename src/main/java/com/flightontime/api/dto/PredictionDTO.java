@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PredictionDTO {
-    private boolean predictionResult;
+    private String predictionResult;
     private Double predictionProbability;
 }

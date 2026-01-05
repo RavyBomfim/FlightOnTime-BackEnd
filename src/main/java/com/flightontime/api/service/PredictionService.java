@@ -99,8 +99,10 @@ public class PredictionService {
                 Flight savedFlight = flightRepository.save(flight);
                 log.info("Voo salvo no banco de dados com ID: {}", savedFlight.getId());
 
+                String prediction = response.predictionResult() ? "Atrasado" : "Pontual";
+
                 PredictionDTO predictionDTO = new PredictionDTO(
-                                response.predictionResult(),
+                                prediction,
                                 response.predictionProbability());
 
                 return new FlightResponseDTO(predictionDTO, weather);

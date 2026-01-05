@@ -9,6 +9,7 @@ Histórico de melhorias e implementações do projeto.
 ### ✨ Adicionado
 
 #### 1. Validação de Aeroportos e Companhias Aéreas
+
 - **Validação de Existência:** Agora o sistema verifica se os códigos de aeroportos (origem e destino) e companhia aérea existem no banco de dados **antes** de enviar para a API Python
 - **Localização:** Implementado em `PredictionService.predict()`
 - **Benefícios:**
@@ -17,31 +18,34 @@ Histórico de melhorias e implementações do projeto.
   - Retorna mensagens de erro específicas ao usuário
 
 **Mensagens de erro implementadas:**
+
 - "Aeroporto de origem não encontrado: {code}"
 - "Aeroporto de destino não encontrado: {code}"
 - "Companhia aérea inválida: {code}"
 
 #### 2. Cálculo Automático de Distância
+
 - **Remoção do campo `distancia_km` do Request:** O usuário não precisa mais informar a distância
 - **Cálculo usando Haversine:** Implementado método `calculateDistanceKm()` que usa a fórmula de Haversine para calcular a distância geodésica entre dois aeroportos
 - **Precisão:** Baseado nas coordenadas geográficas (latitude/longitude) dos aeroportos
 - **Localização:** `PredictionService.calculateDistanceKm()`
 
 **Fórmula de Haversine:**
+
 ```java
 private double calculateDistanceKm(Airport origin, Airport destination) {
     final int EARTH_RADIUS_KM = 6371;
-    
+
     double latDistance = Math.toRadians(destination.getAirportLatitude() - origin.getAirportLatitude());
     double lonDistance = Math.toRadians(destination.getAirportLongitude() - origin.getAirportLongitude());
-    
+
     double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
             + Math.cos(Math.toRadians(origin.getAirportLatitude()))
             * Math.cos(Math.toRadians(destination.getAirportLatitude()))
             * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-    
+
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    
+
     return EARTH_RADIUS_KM * c;
 }
 ```
@@ -49,6 +53,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 #### 3. Simplificação da API
 
 **Request ANTES:**
+
 ```json
 {
   "companhia": "GOL",
@@ -60,6 +65,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ```
 
 **Request AGORA:**
+
 ```json
 {
   "companhia": "GOL",
@@ -72,6 +78,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ### 🔧 Modificado
 
 #### 1. Remoção de Validação Redundante
+
 - Removida verificação duplicada de aeroporto no `WeatherService`
 - A validação agora acontece apenas uma vez no `PredictionService`
 - Princípio: validar no ponto de entrada do fluxo
@@ -82,6 +89,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 #### 2. Fluxo de Predição Otimizado
 
 **Novo fluxo:**
+
 1. Recebe requisição
 2. **Valida companhia aérea** (existência no banco)
 3. **Valida aeroporto de origem** (existência no banco)
@@ -95,6 +103,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ### 📝 Documentação Atualizada
 
 #### Arquivos atualizados:
+
 - ✅ `README.md` - Exemplos de request sem distancia_km
 - ✅ `README.md` - Novos códigos ICAO (4 caracteres) para aeroportos
 - ✅ `README.md` - Documentação de validações
@@ -105,11 +114,13 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ### 🐛 Correções
 
 #### 1. Correção de Tipos
+
 - Ajustado cast de `double` para `int` na distância calculada
 - Implementação correta: `(int) Math.round(distanceKmDouble)`
 - Garante compatibilidade com `PredictionRequest` e `Flight.distanceKm`
 
 #### 2. Logs Melhorados
+
 - Adicionado log de distância calculada
 - Adicionado log de validação de aeroportos
 - Melhor rastreabilidade do fluxo de execução
@@ -117,12 +128,14 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ### 🎯 Impacto das Mudanças
 
 #### Para o Usuário da API:
+
 ✅ **Mais simples:** Não precisa calcular ou informar distância
 ✅ **Mais seguro:** Valida se aeroportos/companhias existem antes de processar
 ✅ **Mais rápido:** Detecta erros imediatamente
 ✅ **Mais preciso:** Distância calculada com precisão geodésica
 
 #### Para o Desenvolvedor:
+
 ✅ **Menos código duplicado:** Validação centralizada
 ✅ **Melhor separação de responsabilidades:** Cada serviço tem uma função clara
 ✅ **Mais manutenível:** Lógica de cálculo isolada em método privado
@@ -133,6 +146,7 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ## [Anteriormente] - Funcionalidades Base
 
 ### Implementado
+
 - ✅ Endpoint POST /api/flights/predict
 - ✅ Integração com API Python via RestClient
 - ✅ Integração com OpenMeteo para dados meteorológicos
@@ -150,18 +164,21 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
 ## Próximas Melhorias Sugeridas
 
 ### 🔜 Curto Prazo
+
 - [ ] Adicionar testes unitários e de integração
 - [ ] Implementar batch prediction (CSV)
 - [ ] Adicionar Postman Collection exportada
 - [ ] Criar vídeo/GIF demonstrativo
 
 ### 🎯 Médio Prazo
+
 - [ ] Implementar explicabilidade (SHAP/LIME)
 - [ ] Dashboard visual com gráficos
 - [ ] Suporte a PostgreSQL para produção
 - [ ] Health checks completos
 
 ### 🚀 Longo Prazo
+
 - [ ] Sistema de notificações
 - [ ] API de comparação entre companhias
 - [ ] Análise de tendências temporais

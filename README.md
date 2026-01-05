@@ -4,8 +4,8 @@ API REST desenvolvida em Spring Boot para predição de atrasos de voos. Este pr
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Java 25**
-- **Spring Boot 4.0.0**
+- **Java 21**
+- **Spring Boot 4.0.1**
 - **Maven** - Gerenciamento de dependências
 - **Lombok** - Redução de boilerplate
 - **Spring Validation** - Validação de dados
@@ -220,12 +220,12 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 #### Parâmetros
 
-| Campo          | Tipo     | Obrigatório | Descrição                                              |
-| -------------- | -------- | ----------- | ------------------------------------------------------ |
-| `companhia`    | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, TAM, AZU |
-| `origem`       | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR |
+| Campo          | Tipo     | Obrigatório | Descrição                                                          |
+| -------------- | -------- | ----------- | ------------------------------------------------------------------ |
+| `companhia`    | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, TAM, AZU        |
+| `origem`       | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR  |
 | `destino`      | String   | Sim         | Código ICAO do aeroporto de destino (4 caracteres). Ex: SBSP, SBGL |
-| `data_partida` | DateTime | Sim         | Data e hora de partida (formato ISO 8601)              |
+| `data_partida` | DateTime | Sim         | Data e hora de partida (formato ISO 8601)                          |
 
 **Nota:** A distância entre aeroportos é calculada automaticamente usando a fórmula de Haversine com base nas coordenadas geográficas.
 
@@ -251,20 +251,21 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 **Campos de resposta:**
 
-| Campo                      | Tipo    | Descrição                                       |
-| -------------------------- | ------- | ----------------------------------------------- |
-| `predict.previsao`         | Boolean | true = Atrasado, false = Pontual                |
-| `predict.probabilidade`    | Double  | Probabilidade de atraso (0.0 a 1.0)             |
-| `weather.temperatura`      | String  | Temperatura no aeroporto de origem              |
-| `weather.precipitacao`     | String  | Precipitação no aeroporto de origem             |
-| `weather.vento`            | String  | Velocidade do vento no aeroporto de origem      |
+| Campo                   | Tipo    | Descrição                                  |
+| ----------------------- | ------- | ------------------------------------------ |
+| `predict.previsao`      | Boolean | true = Atrasado, false = Pontual           |
+| `predict.probabilidade` | Double  | Probabilidade de atraso (0.0 a 1.0)        |
+| `weather.temperatura`   | String  | Temperatura no aeroporto de origem         |
+| `weather.precipitacao`  | String  | Precipitação no aeroporto de origem        |
+| `weather.vento`         | String  | Velocidade do vento no aeroporto de origem |
 
-**Validações realiGOL",
-    "origem": "SBGL",
-    "destino": "SBGR",
-    "data_partida": "2025-12-20T18:00:00"
-  }'
-```
+\*\*Validações realiGOL",
+"origem": "SBGL",
+"destino": "SBGR",
+"data_partida": "2025-12-20T18:00:00"
+}'
+
+````
 
 **Voo com baixa probabilidade de atraso:**
 
@@ -280,7 +281,7 @@ curl -X POST http://localhost:8080/api/flights/predict \
     "data_partida": "2025-12-20T10:00:00",
     "distancia_km": 6500
   }'
-```
+````
 
 **Voo com baixa probabilidade de atraso:**
 
@@ -378,12 +379,14 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
 ### Possíveis Mensagens de Validação
 
 **Validações de formato:**
+
 - **companhia:** "A companhia aérea é obrigatória" ou "O nome da companhia aérea deve ter 3 caracteres"
 - **origem:** "O aeroporto de origem é obrigatório" ou "O código do aeroporto de origem deve ter 4 caracteres"
 - **destino:** "O aeroporto de destino é obrigatório" ou "O código do aeroporto de destino deve ter 4 caracteres"
 - **data_partida:** "A data de partida é obrigatória"
 
 **Validações de existência (Runtime):**
+
 - **Companhia aérea inválida:** "Companhia aérea inválida: XXX" (quando o código não existe no banco)
 - **Aeroporto de origem inválido:** "Aeroporto de origem não encontrado: XXXX" (quando o código não existe no banco)
 - **Aeroporto de destino inválido:** "Aeroporto de destino não encontrado: XXXX" (quando o código não existe no banco)
@@ -419,6 +422,7 @@ DTOs (FlightRequestDTO / FlightResponseDTO / PredictionDTO / WeatherDTO)
 ### Integração com Machine Learning
 
 A aplicação integra com uma API Python (FastAPI) que executa o modelo de Machine Learning treinado:
+
 - Utiliza RestClient para comunicação HTTP
 - Envia: companhia, origem, destino, data, dia da semana e distância
 - Recebe: predição (boolean) e probabilidade (double)

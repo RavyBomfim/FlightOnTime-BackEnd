@@ -214,7 +214,7 @@ Content-Type: application/json
 ```java
 private double calculateDistanceKm(Airport origin, Airport destination) {
     final int EARTH_RADIUS_KM = 6371;
-    
+
     // Converter graus para radianos
     double latDistance = Math.toRadians(
         destination.getAirportLatitude() - origin.getAirportLatitude()
@@ -222,15 +222,15 @@ private double calculateDistanceKm(Airport origin, Airport destination) {
     double lonDistance = Math.toRadians(
         destination.getAirportLongitude() - origin.getAirportLongitude()
     );
-    
+
     // Fórmula de Haversine
     double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
             + Math.cos(Math.toRadians(origin.getAirportLatitude()))
             * Math.cos(Math.toRadians(destination.getAirportLatitude()))
             * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-    
+
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    
+
     // Distância em km
     return EARTH_RADIUS_KM * c;
 }
@@ -263,7 +263,7 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String airline;              // Código da companhia (3 chars)
     private String origin;               // Código ICAO origem (4 chars)
     private String destination;          // Código ICAO destino (4 chars)
@@ -286,7 +286,7 @@ public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String airportCode;          // ICAO code (4 chars)
     private String airportName;          // Nome completo
     private String airportCity;          // Cidade
@@ -305,7 +305,7 @@ public class Airline {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String airlineCode;          // Código IATA (3 chars)
     private String airlineName;          // Nome completo
 }
@@ -322,6 +322,7 @@ public class Airline {
 **Endpoint:** `POST /predict`
 
 **Request:**
+
 ```json
 {
   "companhia": "GOL",
@@ -334,6 +335,7 @@ public class Airline {
 ```
 
 **Response:**
+
 ```json
 {
   "previsao": true,
@@ -346,11 +348,13 @@ public class Airline {
 **Base URL:** `https://api.open-meteo.com/v1/forecast`
 
 **Parâmetros:**
+
 - latitude
 - longitude
 - hourly=temperature_2m,precipitation,wind_speed_10m
 
 **Response:**
+
 ```json
 {
   "current": {
@@ -395,54 +399,62 @@ springdoc.swagger-ui.path=/swagger-ui.html
 
 ## 🎯 Endpoints da API
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/api/flights/predict` | Predição de atraso |
-| GET | `/api/flights` | Lista todos os voos |
-| GET | `/api/flights/{id}` | Busca voo por ID |
-| GET | `/api/flights/stats` | Estatísticas agregadas |
-| GET | `/api/flights/search/origin` | Busca por origem |
-| GET | `/api/flights/search/destination` | Busca por destino |
-| GET | `/api/flights/search/route` | Busca por rota |
-| GET | `/api/flights/search/ontime` | Voos pontuais |
-| GET | `/api/flights/search/delayed` | Voos atrasados |
-| DELETE | `/api/flights/{id}` | Remove voo |
+| Método | Endpoint                          | Descrição              |
+| ------ | --------------------------------- | ---------------------- |
+| POST   | `/api/flights/predict`            | Predição de atraso     |
+| GET    | `/api/flights`                    | Lista todos os voos    |
+| GET    | `/api/flights/{id}`               | Busca voo por ID       |
+| GET    | `/api/flights/stats`              | Estatísticas agregadas |
+| GET    | `/api/flights/search/origin`      | Busca por origem       |
+| GET    | `/api/flights/search/destination` | Busca por destino      |
+| GET    | `/api/flights/search/route`       | Busca por rota         |
+| GET    | `/api/flights/search/ontime`      | Voos pontuais          |
+| GET    | `/api/flights/search/delayed`     | Voos atrasados         |
+| DELETE | `/api/flights/{id}`               | Remove voo             |
 
 ---
 
 ## 🚀 Decisões de Design
 
 ### 1. Cálculo Automático de Distância
+
 **Decisão:** Remover `distancia_km` do request e calcular automaticamente.
 
 **Motivo:**
+
 - Simplifica a API para o cliente
 - Elimina possibilidade de erro humano
 - Garante precisão usando coordenadas reais
 - Reduz campos obrigatórios
 
 ### 2. Validação Antecipada
+
 **Decisão:** Validar aeroportos e companhias **antes** de chamar API Python.
 
 **Motivo:**
+
 - Fail-fast: detecta erros imediatamente
 - Economia de recursos: não processa dados inválidos
 - Melhor experiência do usuário: mensagens de erro claras
 - Reduz carga na API de ML
 
 ### 3. Separação de Responsabilidades
+
 **Decisão:** Cada serviço tem uma responsabilidade única.
 
 **Motivo:**
+
 - PredictionService: orquestra o fluxo
 - FlightService: CRUD e estatísticas
 - WeatherService: apenas dados climáticos
 - Facilita manutenção e testes
 
 ### 4. DTOs para Comunicação
+
 **Decisão:** Usar DTOs ao invés de expor entidades.
 
 **Motivo:**
+
 - Controle sobre dados expostos
 - Facilita versionamento da API
 - Desacopla modelo de domínio da API
@@ -477,10 +489,12 @@ public FlightResponseDTO predict(...) {
 ## 🔐 Segurança
 
 ### CORS
+
 - Configurado para permitir origens específicas
 - Headers permitidos para APIs REST
 
 ### Validação
+
 - Bean Validation (@Valid, @NotNull, @Size)
 - Validação de existência no banco
 - Sanitização de inputs
