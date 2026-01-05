@@ -39,10 +39,7 @@ public class Flight {
     private LocalDate scheduledDepartureDate;
 
     @Column(nullable = false)
-    private int dayOfWeek;
-
-    @Column(nullable = false)
-    private int distanceKm;
+    private int distanceMeters;
 
     @Column(length = 1000)
     private String predictionResult;

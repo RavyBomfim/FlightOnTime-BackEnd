@@ -58,20 +58,16 @@ public class PredictionService {
                                 originAirport.getAirportName(), destinationAirport.getAirportName());
 
                 // Calcular distância em quilômetros usando a fórmula de Haversine
-                double distanceKmDouble = calculateDistanceKm(originAirport, destinationAirport);
-                int distanceKm = (int) Math.round(distanceKmDouble);
-                log.debug("Distância calculada entre aeroportos: {} km", distanceKm);
-
-                // Obter o dia da semana (1 = Segunda, 7 = Domingo)
-                int dayOfWeek = flightRequestDTO.scheduledDeparture().getDayOfWeek().getValue();
+                double distanceMetersDouble = calculateDistanceKm(originAirport, destinationAirport);
+                int distanceMeters = (int) Math.round(distanceMetersDouble * 1000);
+                log.debug("Distância calculada entre aeroportos: {} metros", distanceMeters);
 
                 PredictionRequest payload = new PredictionRequest(
                                 flightRequestDTO.airline(),
                                 flightRequestDTO.origin(),
                                 flightRequestDTO.destination(),
                                 flightRequestDTO.scheduledDeparture().toLocalDate(),
-                                dayOfWeek,
-                                distanceKm);
+                                distanceMeters);
 
                 log.debug("Enviando payload para API Python: {}", payload);
                 PredictionResponse response = predictionClient.predict(payload);
@@ -91,18 +87,15 @@ public class PredictionService {
                 flight.setOrigin(flightRequestDTO.origin());
                 flight.setDestination(flightRequestDTO.destination());
                 flight.setScheduledDepartureDate(flightRequestDTO.scheduledDeparture().toLocalDate());
-                flight.setDayOfWeek(dayOfWeek);
-                flight.setDistanceKm(distanceKm);
+                flight.setDistanceMeters(distanceMeters);
                 flight.setPredictionResult(predictionResultText);
                 flight.setPredictionProbability(response.predictionProbability());
 
                 Flight savedFlight = flightRepository.save(flight);
                 log.info("Voo salvo no banco de dados com ID: {}", savedFlight.getId());
 
-                String prediction = response.predictionResult() ? "Atrasado" : "Pontual";
-
                 PredictionDTO predictionDTO = new PredictionDTO(
-                                prediction,
+                                predictionResultText,
                                 response.predictionProbability());
 
                 return new FlightResponseDTO(predictionDTO, weather);

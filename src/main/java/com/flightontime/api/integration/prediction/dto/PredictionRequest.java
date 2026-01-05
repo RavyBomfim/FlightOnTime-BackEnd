@@ -9,6 +9,5 @@ public record PredictionRequest(
         @JsonProperty("origem") String origin,
         @JsonProperty("destino") String destination,
         @JsonProperty("data_partida") LocalDate scheduledDepartureDate,
-        @JsonProperty("dia_semana") int dayOfWeek,
-        @JsonProperty("distancia_km") int distanceKm) {
+        @JsonProperty("distancia_metros") int distanceMeters) {
 }
