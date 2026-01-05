@@ -2,8 +2,6 @@ package com.flightontime.api.integration.prediction;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
 import com.flightontime.api.integration.prediction.dto.PredictionRequest;

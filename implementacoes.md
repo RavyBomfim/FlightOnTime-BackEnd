@@ -1,22 +1,131 @@
-# Implementações Sugeridas - FlightOnTime BackEnd
+# Implementações - FlightOnTime BackEnd
 
-Este documento contém sugestões de implementações para o projeto FlightOnTime-BackEnd, organizadas por prioridade e categoria.
+Este documento contém o status das implementações do projeto FlightOnTime-BackEnd.
 
 ---
 
-## **Funcionalidades Exigidas pelo Projeto (MVP) - Ainda Não Implementadas:**
+## **Funcionalidades Implementadas ✅**
 
-### 1. Endpoint GET /stats
+### 1. ✅ Endpoint POST /api/flights/predict
 
-**Descrição:** Retornar estatísticas agregadas (% de voos atrasados no dia)
+**Status:** IMPLEMENTADO
+
+**Descrição:** Predição de atraso de voos com integração à API Python de Machine Learning
+
+**Funcionalidades:**
+- Validação de formato dos códigos (companhia: 3 caracteres, aeroportos: 4 caracteres)
+- Validação de existência de companhia aérea no banco de dados
+- Validação de existência de aeroportos de origem e destino no banco de dados
+- Cálculo automático de distância usando fórmula de Haversine
+- Integração com API Python para predição via RestClient
+- Busca de dados meteorológicos do aeroporto de origem via OpenMeteo
+- Persistência de todas as predições no banco H2
+- Retorno de predição + probabilidade + dados climáticos
+
+### 2. ✅ Endpoint GET /api/flights/stats
+
+**Status:** IMPLEMENTADO
+
+**Descrição:** Retorna estatísticas agregadas de voos
+
+**Funcionalidades:**
+- Estatísticas gerais (total de voos, atrasados, pontuais, %)
+- Estatísticas por data
+- Estatísticas por companhia aérea
+- Estatísticas por origem
+- Estatísticas por destino
+- Estatísticas por rota (origem-destino)
+- Cache de estatísticas para performance
+- Invalidação automática de cache ao adicionar/remover voos
+
+### 3. ✅ Persistência de Dados com JPA/Hibernate
+
+**Status:** IMPLEMENTADO
 
 **Detalhes:**
+- Banco H2 em memória para desenvolvimento
+- Entidades: Flight, Airport, Airline
+- Repositories com Spring Data JPA
+- Dados pré-carregados via data.sql
+- Timestamps automáticos (createdAt, updatedAt)
 
-- Endpoint: `GET /api/flights/stats`
-- Retornar métricas como percentual de voos atrasados
-- Agrupar por data, companhia, origem/destino
+### 4. ✅ Endpoints de Consulta
 
-### 2. Exemplos documentados no README
+**Status:** IMPLEMENTADO
+
+**Endpoints disponíveis:**
+- `GET /api/flights` - Lista todos os voos
+- `GET /api/flights/{id}` - Busca voo por ID
+- `GET /api/flights/search/origin?origin={code}` - Busca por origem
+- `GET /api/flights/search/destination?destination={code}` - Busca por destino
+- `GET /api/flights/search/route?origin={code}&destination={code}` - Busca por rota
+- `GET /api/flights/search/ontime` - Busca voos pontuais
+- `GET /api/flights/search/delayed` - Busca voos atrasados
+- `DELETE /api/flights/{id}` - Remove voo do banco
+
+### 5. ✅ Integração com API externa de clima
+
+**Status:** IMPLEMENTADO
+
+**Detalhes:**
+- Integração com OpenMeteo API
+- Busca condições meteorológicas por coordenadas geográficas
+- Retorna temperatura, precipitação e velocidade do vento
+- Integrado na resposta do endpoint /predict
+
+### 6. ✅ Documentação com OpenAPI/Swagger
+
+**Status:** IMPLEMENTADO
+
+**Detalhes:**
+- Documentação interativa disponível em `/swagger-ui.html`
+- Todas as APIs documentadas com descrições e exemplos
+- Schemas de request/response detalhados
+
+### 7. ✅ Containerização com Docker
+
+**Status:** IMPLEMENTADO
+
+**Detalhes:**
+- Dockerfile multi-stage para otimização
+- docker-compose.yml para orquestração
+- Documentação em DOCKER_NETWORKING.md
+- Health checks configurados
+
+---
+
+## **Funcionalidades Pendentes/Sugeridas**
+
+### 8. Exemplos documentados no README
+
+**Status:** EM ANDAMENTO
+
+**Descrição:** Adicionar mais exemplos práticos de uso
+
+**Pendente:**
+- ✅ Exemplos básicos de cURL adicionados
+- ✅ Exemplos PowerShell adicionados
+- ✅ Exemplos JavaScript adicionados
+- ✅ Exemplos Python adicionados
+- ⏳ Adicionar vídeo/GIF demonstrativo
+- ⏳ Adicionar Postman Collection exportada
+
+### 9. Validação completa de contrato
+
+**Status:** IMPLEMENTADO ✅
+
+**Detalhes:**
+- ✅ Validação de formato (tamanhos de campos)
+- ✅ Validação de existência (banco de dados)
+- ✅ Mensagens de erro claras e específicas
+- ✅ Tipos de dados corretos
+- ✅ Formato de datas ISO 8601
+
+---
+
+## **Funcionalidades Opcionais Sugeridas:**
+
+### 10. Batch Prediction
 
 **Descrição:** Adicionar 3 exemplos de uso via cURL/Postman
 

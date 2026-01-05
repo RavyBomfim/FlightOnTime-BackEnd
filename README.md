@@ -212,10 +212,9 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 ```json
 {
   "companhia": "GOL",
-  "origem": "GRU",
-  "destino": "JFK",
-  "data_partida": "2025-12-15T14:30:00",
-  "distancia_km": 7800
+  "origem": "SBGR",
+  "destino": "SBBR",
+  "data_partida": "2025-12-15T14:30:00"
 }
 ```
 
@@ -223,11 +222,12 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 | Campo          | Tipo     | Obrigatório | Descrição                                              |
 | -------------- | -------- | ----------- | ------------------------------------------------------ |
-| `companhia`    | String   | Sim         | Nome da companhia aérea                                |
-| `origem`       | String   | Sim         | Código IATA do aeroporto de origem                     |
-| `destino`      | String   | Sim         | Código IATA do aeroporto de destino                    |
+| `companhia`    | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, TAM, AZU |
+| `origem`       | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR |
+| `destino`      | String   | Sim         | Código ICAO do aeroporto de destino (4 caracteres). Ex: SBSP, SBGL |
 | `data_partida` | DateTime | Sim         | Data e hora de partida (formato ISO 8601)              |
-| `distancia_km` | Double   | Sim         | Distância do voo em quilômetros (deve ser maior que 0) |
+
+**Nota:** A distância entre aeroportos é calculada automaticamente usando a fórmula de Haversine com base nas coordenadas geográficas.
 
 #### Response
 
@@ -237,30 +237,45 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 
 ```json
 {
-  "status": "Atraso",
-  "probabilidade": 0.57
+  "predict": {
+    "previsao": true,
+    "probabilidade": 0.78
+  },
+  "weather": {
+    "temperatura": "25.5°C",
+    "precipitacao": "0.0mm",
+    "vento": "12.5 km/h"
+  }
 }
 ```
 
 **Campos de resposta:**
 
-| Campo           | Tipo   | Descrição                                       |
-| --------------- | ------ | ----------------------------------------------- |
-| `status`        | String | Status previsto do voo: "Atrasado" ou "Pontual" |
-| `probabilidade` | Double | Probabilidade de atraso (0.0 a 1.0)             |
+| Campo                      | Tipo    | Descrição                                       |
+| -------------------------- | ------- | ----------------------------------------------- |
+| `predict.previsao`         | Boolean | true = Atrasado, false = Pontual                |
+| `predict.probabilidade`    | Double  | Probabilidade de atraso (0.0 a 1.0)             |
+| `weather.temperatura`      | String  | Temperatura no aeroporto de origem              |
+| `weather.precipitacao`     | String  | Precipitação no aeroporto de origem             |
+| `weather.vento`            | String  | Velocidade do vento no aeroporto de origem      |
 
-## 🧪 Exemplos de Chamadas
+**Validações realiGOL",
+    "origem": "SBGL",
+    "destino": "SBGR",
+    "data_partida": "2025-12-20T18:00:00"
+  }'
+```
 
-### Usando cURL
-
-**Voo com alta probabilidade de atraso:**
+**Voo com baixa probabilidade de atraso:**
 
 ```bash
 curl -X POST http://localhost:8080/api/flights/predict \
   -H "Content-Type: application/json" \
   -d '{
-    "companhia": "LATAM",
-    "origem": "GRU",
+    "companhia": "AZU",
+    "origem": "SBGR",
+    "destino": "SBSP",
+    "data_partida": "2025-12-18T08:30:00"
     "destino": "MIA",
     "data_partida": "2025-12-20T10:00:00",
     "distancia_km": 6500
@@ -271,10 +286,9 @@ curl -X POST http://localhost:8080/api/flights/predict \
 
 ```bash
 curl -X POST http://localhost:8080/api/flights/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "companhia": "Azul",
-    "origem": "GRU",
+  -H "Content-SBGR"
+    destino = "SBBR"
+    data_partida = "2025-12-25T16:45:00"
     "destino": "CGH",
     "data_partida": "2025-12-18T08:30:00",
     "distancia_km": 15
@@ -310,11 +324,10 @@ fetch("http://localhost:8080/api/flights/predict", {
     companhia: "Azul",
     origem: "GRU",
     destino: "REC",
-    data_partida: "2025-12-30T11:20:00",
-    distancia_km: 2130,
-  }),
-})
-  .then((response) => response.json())
+    data_partida:ZU",
+    origem: "SBGR",
+    destino: "SBRF",
+    data_partida: "2025-12-30T11:20:00"esponse.json())
   .then((data) => console.log(data))
   .catch((error) => console.error("Erro:", error));
 ```
@@ -332,11 +345,10 @@ data = {
     "origem": "GRU",
     "destino": "FOR",
     "data_partida": "2025-12-22T13:15:00",
-    "distancia_km": 2520
-}
-
-response = requests.post(url, headers=headers, data=json.dumps(data))
-print(response.json())
+    "distancia_km"TAM",
+    "origem": "SBGR",
+    "destino": "SBFZ",
+    "data_partida": "2025-12-22T13:15:00"
 ```
 
 ## ⚠️ Validações e Erros
@@ -357,19 +369,24 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
   "detail": "Invalid request content.",
   "instance": "/api/flights/predict",
   "errors": {
-    "companhia": "A companhia aérea é obrigatória",
-    "distancia_km": "A distância deve ser maior que 0"
+    "companhia": "O nome da companhia aérea deve ter 3 caracteres",
+    "origem": "O código do aeroporto de origem deve ter 4 caracteres"
   }
 }
 ```
 
 ### Possíveis Mensagens de Validação
 
-- **companhia:** "A companhia aérea é obrigatória"
-- **origem:** "O aeroporto de origem é obrigatório"
-- **destino:** "O aeroporto de destino é obrigatório"
+**Validações de formato:**
+- **companhia:** "A companhia aérea é obrigatória" ou "O nome da companhia aérea deve ter 3 caracteres"
+- **origem:** "O aeroporto de origem é obrigatório" ou "O código do aeroporto de origem deve ter 4 caracteres"
+- **destino:** "O aeroporto de destino é obrigatório" ou "O código do aeroporto de destino deve ter 4 caracteres"
 - **data_partida:** "A data de partida é obrigatória"
-- **distancia_km:** "A distância é obrigatória" ou "A distância deve ser maior que 0"
+
+**Validações de existência (Runtime):**
+- **Companhia aérea inválida:** "Companhia aérea inválida: XXX" (quando o código não existe no banco)
+- **Aeroporto de origem inválido:** "Aeroporto de origem não encontrado: XXXX" (quando o código não existe no banco)
+- **Aeroporto de destino inválido:** "Aeroporto de destino não encontrado: XXXX" (quando o código não existe no banco)
 
 ## 🔍 Como Funciona
 
@@ -382,17 +399,29 @@ Controller (FlightController)
     ↓
 Service (PredictionService)
     ↓
-DTOs (FlightRequestDTO / FlightResponseDTO)
+Integration (PredictionClient / WeatherService)
+    ↓
+Repository (FlightRepository / AirportRepository / AirlineRepository)
+    ↓
+DTOs (FlightRequestDTO / FlightResponseDTO / PredictionDTO / WeatherDTO)
 ```
 
-### Lógica de Predição (Versão Atual - MOCK)
+### Fluxo de Predição
 
-**⚠️ Importante:** A versão atual utiliza uma lógica simplificada para demonstração:
+1. **Validação de Entrada:** Valida formato dos códigos (3 caracteres para companhia, 4 para aeroportos)
+2. **Validação de Existência:** Verifica se companhia aérea e aeroportos existem no banco de dados
+3. **Cálculo de Distância:** Usa fórmula de Haversine para calcular distância entre aeroportos
+4. **Chamada à API Python:** Envia dados para o modelo de Machine Learning
+5. **Busca de Dados Meteorológicos:** Obtém condições climáticas do aeroporto de origem
+6. **Persistência:** Salva a predição no banco de dados
+7. **Resposta:** Retorna predição e dados meteorológicos ao cliente
 
-- **Voos com distância > 1000 km:** Classificados como "Atrasado" com probabilidade de 85%
-- **Voos com distância ≤ 1000 km:** Classificados como "Pontual" com probabilidade de 15%
+### Integração com Machine Learning
 
-**Próximos Passos:** A implementação final incluirá integração com um modelo de Machine Learning em Python para predições mais precisas.
+A aplicação integra com uma API Python (FastAPI) que executa o modelo de Machine Learning treinado:
+- Utiliza RestClient para comunicação HTTP
+- Envia: companhia, origem, destino, data, dia da semana e distância
+- Recebe: predição (boolean) e probabilidade (double)
 
 ### CORS
 
