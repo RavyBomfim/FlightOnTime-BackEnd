@@ -8,6 +8,7 @@ import org.springframework.web.client.RestClient;
 
 import com.flightontime.api.integration.prediction.dto.PredictionRequest;
 import com.flightontime.api.integration.prediction.dto.PredictionResponse;
+import com.flightontime.api.integration.prediction.exception.PredictionServiceException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,18 +29,26 @@ public class PredictionClient {
                                         .retrieve()
                                         .onStatus(status -> status.is4xxClientError(),
                                                         (req, res) -> {
-                                                                throw new RuntimeException("Erro na requisição: "
-                                                                                + res.getStatusText());
-                                                        })
+                                                                log.error("Erro 4xx ao chamar a API de predição");
+                                                                throw new PredictionServiceException(
+                                        "Dados inválidos para predição");})
                                         .onStatus(status -> status.is5xxServerError(),
                                                         (req, res) -> {
-                                                                throw new RuntimeException(
-                                                                                "Erro no servidor de predição: "
-                                                                                                + res.getStatusText());
+                                                                log.error("Erro 5xx na API de predição");
+                                                                throw new PredictionServiceException(
+                                                                                "Serviço de predição indisponível");
                                                         })
                                         .body(PredictionResponse.class);
+
+                } catch (ResourceAccessException e) {
+                        log.error("API de predição fora do ar", e);
+                        throw new PredictionServiceException(
+                                        "Não foi possível conectar ao serviço de predição");
+
                 } catch (Exception e) {
-                        throw new RuntimeException("Falha ao comunicar com a API de predição: " + e.getMessage(), e);
+                        log.error("Erro inesperado ao chamar serviço de predição", e);
+                        throw new PredictionServiceException(
+                                        "Erro ao processar a predição");
                 }
         }
 }
