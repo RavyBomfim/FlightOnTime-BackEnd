@@ -14,7 +14,7 @@ API REST desenvolvida em Spring Boot para predição de atrasos de voos. Este pr
 
 ## 📋 Pré-requisitos
 
-- Java 25 ou superior
+- Java 21 ou superior
 - Maven 3.6+
 - **API Python de Predição** rodando na porta 8000
 
@@ -259,13 +259,30 @@ Realiza a predição de atraso de um voo com base nos dados fornecidos.
 | `weather.precipitacao`  | String  | Precipitação no aeroporto de origem        |
 | `weather.vento`         | String  | Velocidade do vento no aeroporto de origem |
 
-\*\*Validações realiGOL",
-"origem": "SBGL",
-"destino": "SBGR",
-"data_partida": "2025-12-20T18:00:00"
-}'
+**Validações realizadas:**
 
-````
+- Verifica se o código da companhia aérea existe no banco de dados
+- Verifica se o código do aeroporto de origem existe no banco de dados
+- Verifica se o código do aeroporto de destino existe no banco de dados
+- Calcula automaticamente a distância entre os aeroportos usando Haversine
+- Busca dados meteorológicos para o aeroporto de origem
+
+## 🧪 Exemplos de Chamadas
+
+### Usando cURL
+
+**Voo com alta probabilidade de atraso:**
+
+```bash
+curl -X POST http://localhost:8080/api/flights/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "companhia": "GOL",
+    "origem": "SBGL",
+    "destino": "SBGR",
+    "data_partida": "2025-12-20T18:00:00"
+  }'
+```
 
 **Voo com baixa probabilidade de atraso:**
 
@@ -277,22 +294,6 @@ curl -X POST http://localhost:8080/api/flights/predict \
     "origem": "SBGR",
     "destino": "SBSP",
     "data_partida": "2025-12-18T08:30:00"
-    "destino": "MIA",
-    "data_partida": "2025-12-20T10:00:00",
-    "distancia_km": 6500
-  }'
-````
-
-**Voo com baixa probabilidade de atraso:**
-
-```bash
-curl -X POST http://localhost:8080/api/flights/predict \
-  -H "Content-SBGR"
-    destino = "SBBR"
-    data_partida = "2025-12-25T16:45:00"
-    "destino": "CGH",
-    "data_partida": "2025-12-18T08:30:00",
-    "distancia_km": 15
   }'
 ```
 
@@ -301,10 +302,9 @@ curl -X POST http://localhost:8080/api/flights/predict \
 ```powershell
 $body = @{
     companhia = "GOL"
-    origem = "GRU"
-    destino = "BSB"
+    origem = "SBGR"
+    destino = "SBBR"
     data_partida = "2025-12-25T16:45:00"
-    distancia_km = 900
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
@@ -322,13 +322,13 @@ fetch("http://localhost:8080/api/flights/predict", {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    companhia: "Azul",
-    origem: "GRU",
-    destino: "REC",
-    data_partida:ZU",
+    companhia: "AZU",
     origem: "SBGR",
     destino: "SBRF",
-    data_partida: "2025-12-30T11:20:00"esponse.json())
+    data_partida: "2025-12-30T11:20:00",
+  }),
+})
+  .then((response) => response.json())
   .then((data) => console.log(data))
   .catch((error) => console.error("Erro:", error));
 ```
@@ -342,14 +342,14 @@ import json
 url = "http://localhost:8080/api/flights/predict"
 headers = {"Content-Type": "application/json"}
 data = {
-    "companhia": "LATAM",
-    "origem": "GRU",
-    "destino": "FOR",
-    "data_partida": "2025-12-22T13:15:00",
-    "distancia_km"TAM",
+    "companhia": "TAM",
     "origem": "SBGR",
     "destino": "SBFZ",
     "data_partida": "2025-12-22T13:15:00"
+}
+
+response = requests.post(url, headers=headers, data=json.dumps(data))
+print(response.json())
 ```
 
 ## ⚠️ Validações e Erros
@@ -487,6 +487,20 @@ O Spring Actuator está habilitado. Endpoints de monitoramento disponíveis:
 
 - **Health Check:** `http://localhost:8080/actuator/health`
 - **Info:** `http://localhost:8080/actuator/info`
+
+## 📚 Documentação da API
+
+A documentação interativa da API está disponível através do Swagger UI:
+
+- **Swagger UI:** `http://localhost:8080/swagger-ui/index.html`
+- **OpenAPI JSON:** `http://localhost:8080/api-docs`
+
+No Swagger UI você pode:
+
+- Visualizar todos os endpoints disponíveis
+- Testar as requisições diretamente no navegador
+- Ver exemplos de request e response
+- Consultar os schemas dos DTOs
 
 ## 🏗️ Estrutura do Projeto
 
