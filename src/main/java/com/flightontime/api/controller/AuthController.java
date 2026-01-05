@@ -25,14 +25,15 @@ public class AuthController {
 
     private final IAuthService authService;
 
-    //private final AuthService authService;
-
-    //private final UserRepository userRepository; prod
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(
             @RequestBody @Valid LoginRequestDTO request) {
 
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody @Valid LoginRequestDTO request) {
+        return ResponseEntity.ok(authService.register(request));
     }
 }

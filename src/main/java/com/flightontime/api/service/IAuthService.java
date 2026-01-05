@@ -5,5 +5,6 @@ import com.flightontime.api.dto.auth.LoginResponseDTO;
 
 public interface IAuthService {
     LoginResponseDTO login(LoginRequestDTO request);
+    String register(LoginRequestDTO request);
 }
 

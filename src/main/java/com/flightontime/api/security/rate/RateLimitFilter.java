@@ -34,6 +34,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
                                         FilterChain filterChain)
             throws ServletException, IOException {
 
+        // Ignora rate limiting para H2 Console e endpoints de autenticação
+        String path = request.getRequestURI();
+        if (path.startsWith("/h2-console") || path.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Pega o IP 
         String clientIp = getClientIP(request);
         

@@ -39,10 +39,12 @@ public class SecurityConfig {
             )
             // Autorização
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
                 //.requestMatchers("/stats").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+            // Permitir frames do H2 Console
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 

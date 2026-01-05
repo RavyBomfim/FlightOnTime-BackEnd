@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import com.flightontime.api.domain.Role;
 import com.flightontime.api.domain.UserEntity;
 import com.flightontime.api.dto.auth.LoginRequestDTO;
 import com.flightontime.api.dto.auth.LoginResponseDTO;
@@ -34,5 +35,22 @@ public class AuthService implements IAuthService {
         return new LoginResponseDTO(
             jwtService.generateToken(user)
         );
+    }
+
+    @Override
+    public String register(LoginRequestDTO request) {
+        // Verifica se já existe
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado!");
+        }
+        
+        UserEntity user = UserEntity.builder()
+            .email(request.email())
+            .password(passwordEncoder.encode(request.password()))
+            .role(Role.USER)
+            .build();
+        
+        userRepository.save(user);
+        return "Usuário registrado com sucesso!";
     }
 }
