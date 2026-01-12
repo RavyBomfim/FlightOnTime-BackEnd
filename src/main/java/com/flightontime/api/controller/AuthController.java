@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flightontime.api.dto.auth.GoogleLoginRequestDTO;
 import com.flightontime.api.dto.auth.LoginRequestDTO;
 import com.flightontime.api.dto.auth.LoginResponseDTO;
 import com.flightontime.api.service.IAuthService;
@@ -37,5 +38,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponseDTO> loginComGoogle(
+            @RequestBody @Valid GoogleLoginRequestDTO request) {
+        return ResponseEntity.ok(authService.loginComGoogle(request.token()));
+    }
 
 }

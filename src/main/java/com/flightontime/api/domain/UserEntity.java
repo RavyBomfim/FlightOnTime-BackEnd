@@ -34,7 +34,9 @@ public class UserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // 🔐 Métodos obrigatórios do UserDetails
+    private String googleId;
+
+    //Métodos obrigatórios do UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
