@@ -3,10 +3,13 @@ package com.flightontime.api.controller;
 import com.flightontime.api.dto.FlightRequestDTO;
 import com.flightontime.api.dto.FlightResponseDTO;
 import com.flightontime.api.entity.Flight;
+import com.flightontime.api.exception.dto.ErrorResponse;
 import com.flightontime.api.service.FlightService;
 import com.flightontime.api.service.PredictionService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/flights")
 @RequiredArgsConstructor
+@Schema
 @Tag(name = "Previsão de Voos", description = "Endpoints para previsão de atrasos de voos")
 public class FlightController {
 
@@ -28,10 +32,24 @@ public class FlightController {
 
     @PostMapping("/predict")
     @Operation(summary = "Prever atraso de voo", description = "Recebe dados de um voo e retorna a previsão de atraso com probabilidade")
+    
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Previsão realizada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos na requisição"),
-            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+
+            @ApiResponse(
+                responseCode = "400", 
+                description = "Dados inválidos na requisição",
+                content = @Content(
+                        schema = @Schema(implementation = ErrorResponse.class)
+            )),
+
+            @ApiResponse(
+                responseCode = "503",
+                description = "Serviço de predição indisponível",
+                content = @Content(
+                        schema = @Schema(implementation = ErrorResponse.class)
+                )
+        )
     })
     public ResponseEntity<FlightResponseDTO> predict(@RequestBody @Valid FlightRequestDTO request) {
         var response = predictionService.predict(request);
@@ -86,9 +104,19 @@ public class FlightController {
     @Operation(summary = "Estatísticas de voos", 
                description = "Retorna estatísticas agregadas incluindo % de voos atrasados por data, companhia, origem/destino")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estatísticas calculadas com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro ao calcular estatísticas")
-    })
+        @ApiResponse(
+                responseCode = "200",
+                description = "Estatísticas calculadas com sucesso"
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "Erro ao calcular estatísticas",
+                content = @Content(
+                        schema = @Schema(implementation = ErrorResponse.class)
+                )
+        )
+})
+
     public ResponseEntity<com.flightontime.api.dto.FlightStatsDTO> getStats() {
         return ResponseEntity.ok(flightService.getFlightStats());
     }
