@@ -36,4 +36,6 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody @Valid LoginRequestDTO request) {
         return ResponseEntity.ok(authService.register(request));
     }
+
+
 }

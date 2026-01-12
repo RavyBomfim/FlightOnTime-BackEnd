@@ -39,7 +39,12 @@ public class SecurityConfig {
             )
             // Autorização
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                .requestMatchers(
+                    "/api/auth/**", 
+                    "/h2-console/**", 
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html").permitAll()
                 //.requestMatchers("/stats").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
