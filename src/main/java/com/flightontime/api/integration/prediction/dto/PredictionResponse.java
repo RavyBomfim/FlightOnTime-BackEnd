@@ -5,5 +5,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record PredictionResponse(
         @JsonProperty("previsao") boolean predictionResult,
         @JsonProperty("probabilidade") double predictionProbability) {
-
 }

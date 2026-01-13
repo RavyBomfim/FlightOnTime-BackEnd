@@ -46,11 +46,11 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     Long countOntimeFlights();
 
     // Optimized queries for statistics aggregation - Returns Object[] with [field, total, delayed]
-    @Query("SELECT f.scheduledDepartureDate, COUNT(f), " +
+    @Query("SELECT CAST(f.scheduledDepartureDate AS date), COUNT(f), " +
            "SUM(CASE WHEN f.predictionResult = :delayedStatus THEN 1 ELSE 0 END) " +
            "FROM Flight f " +
-           "GROUP BY f.scheduledDepartureDate " +
-           "ORDER BY f.scheduledDepartureDate DESC")
+           "GROUP BY CAST(f.scheduledDepartureDate AS date) " +
+           "ORDER BY CAST(f.scheduledDepartureDate AS date) DESC")
     List<Object[]> findStatsGroupedByDate(@Param("delayedStatus") String delayedStatus);
 
     @Query("SELECT f.airline, COUNT(f), " +

@@ -86,7 +86,7 @@ public class PredictionService {
                 flight.setAirline(flightRequestDTO.airline());
                 flight.setOrigin(flightRequestDTO.origin());
                 flight.setDestination(flightRequestDTO.destination());
-                flight.setScheduledDepartureDate(flightRequestDTO.scheduledDeparture().toLocalDate());
+                flight.setScheduledDepartureDate(flightRequestDTO.scheduledDeparture());
                 flight.setDistanceMeters(distanceMeters);
                 flight.setPredictionResult(predictionResultText);
                 flight.setPredictionProbability(response.predictionProbability());

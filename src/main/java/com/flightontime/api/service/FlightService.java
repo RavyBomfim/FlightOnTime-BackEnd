@@ -1,6 +1,7 @@
 package com.flightontime.api.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,7 +91,9 @@ public class FlightService {
                                 .findStatsGroupedByDate("Atrasado")
                                 .stream()
                                 .map(result -> {
-                                        LocalDate date = (LocalDate) result[0];
+                                        java.sql.Date sqlDate = (java.sql.Date) result[0];
+                                        LocalDate dateOnly = sqlDate.toLocalDate();
+                                        LocalDateTime date = dateOnly.atStartOfDay();
                                         long total = ((Number) result[1]).longValue();
                                         long delayed = ((Number) result[2]).longValue();
                                         double percentage = total > 0 ? (delayed * 100.0 / total) : 0.0;

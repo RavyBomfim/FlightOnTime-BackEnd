@@ -1,6 +1,5 @@
 package com.flightontime.api.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -36,7 +35,7 @@ public class Flight {
     private String destination;
 
     @Column(nullable = false)
-    private LocalDate scheduledDepartureDate;
+    private LocalDateTime scheduledDepartureDate;
 
     @Column(nullable = false)
     private int distanceMeters;
