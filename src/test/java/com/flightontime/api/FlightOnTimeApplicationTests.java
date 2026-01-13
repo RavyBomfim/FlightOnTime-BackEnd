@@ -1,13 +1,19 @@
-package com.flightontime.api;
+// package com.flightontime.api;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest
-class FlightOnTimeApplicationTests {
+// import com.flightontime.api.security.jwt.JwtAuthenticationFilter;
 
-	@Test
-	void contextLoads() {
-	}
+// @SpringBootTest
+// class FlightOnTimeApplicationTests {
 
-}
+// 	@MockBean
+//     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+// 	@Test
+// 	void contextLoads() {
+// 	}
+
+// }

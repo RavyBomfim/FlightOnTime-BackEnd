@@ -5,6 +5,8 @@ import com.flightontime.api.dto.auth.LoginResponseDTO;
 
 public interface IAuthService {
     LoginResponseDTO login(LoginRequestDTO request);
+    LoginResponseDTO loginComGoogle(String token);
+
     String register(LoginRequestDTO request);
 }
 
