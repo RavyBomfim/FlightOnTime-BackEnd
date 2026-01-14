@@ -1,542 +1,560 @@
-# Flight on Time - Backend API
+# ✈️ Flight on Time - Backend API
 
-API REST desenvolvida em Spring Boot para predição de atrasos de voos. Este projeto faz parte do hackaton da Oracle Next Education (ONE) e fornece endpoints para análise preditiva de pontualidade de voos.
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+API REST desenvolvida em Spring Boot para **predição inteligente de atrasos de voos** utilizando Machine Learning. Este projeto faz parte do hackaton da Oracle Next Education (ONE) e oferece uma solução completa para análise preditiva de pontualidade de voos com integração a dados meteorológicos em tempo real.
+
+## 🎯 Sobre o Projeto
+
+O FlightOnTime resolve um problema crítico na aviação: **prever atrasos de voos antes que eles aconteçam**. Com base em dados históricos, características do voo e condições meteorológicas, a API fornece predições precisas que ajudam:
+
+- ✈️ **Passageiros**: Planejar melhor suas viagens e conexões
+- 🏢 **Companhias Aéreas**: Otimizar operações e reduzir custos
+- 🛫 **Aeroportos**: Gerenciar recursos e infraestrutura com eficiência
+
+### 🌟 Diferenciais
+
+- 🤖 **Machine Learning Avançado**: Modelo treinado com dados históricos reais
+- 🌤️ **Dados Meteorológicos**: Integração em tempo real com OpenMeteo
+- 📊 **Estatísticas Completas**: Análise detalhada por companhia, rota, aeroporto e data
+- 🔐 **Segurança**: Autenticação JWT e rate limiting
+- 📈 **Alta Performance**: Cache inteligente e otimizações de banco de dados
+- 📚 **Documentação Completa**: Swagger/OpenAPI integrado
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Java 21**
-- **Spring Boot 4.0.1**
+### Backend
+- **Java 21** - Linguagem de programação
+- **Spring Boot 3.2.5** - Framework principal
+- **Spring Security + JWT** - Autenticação e autorização
+- **Spring Data JPA** - Persistência de dados
+- **Hibernate** - ORM
+- **H2 Database** - Banco de dados em memória (desenvolvimento)
+
+### Ferramentas e Bibliotecas
 - **Maven** - Gerenciamento de dependências
 - **Lombok** - Redução de boilerplate
-- **Spring Validation** - Validação de dados
-- **Spring DevTools** - Hot reload durante desenvolvimento
-- **Spring Actuator** - Monitoramento da aplicação
+- **Bean Validation** - Validação de dados com regex
+- **RestClient** - Comunicação HTTP com APIs externas
+- **Bucket4j** - Rate limiting
+- **SpringDoc OpenAPI** - Documentação automática
+- **JaCoCo** - Cobertura de testes (58% nos serviços)
+
+### Integrações Externas
+- **FastAPI Python** - Modelo de Machine Learning
+- **OpenMeteo API** - Dados meteorológicos em tempo real
 
 ## 📋 Pré-requisitos
 
-- Java 21 ou superior
-- Maven 3.6+
-- **API Python de Predição** rodando na porta 8000
+- **Java 21** ou superior
+- **Maven 3.6+**
+- **API Python de Machine Learning** rodando na porta 8000 (obrigatório)
 
-## ⚠️ IMPORTANTE: Configurar API Python
+## ⚠️ IMPORTANTE: Configurar API Python de Machine Learning
 
-Este backend depende da API Python de Machine Learning para funcionar. Antes de iniciar o backend, você **DEVE** configurar e rodar a API Python:
+Este backend **depende obrigatoriamente** da API Python que contém o modelo de Machine Learning treinado. Sem ela, as predições não funcionarão.
 
-### 1. Clone o repositório da API Python
+### Passo 1: Clone o repositório da API Python
 
 ```bash
 git clone https://github.com/RavyBomfim/FlightOnTime-DataScience.git
 cd FlightOnTime-DataScience/API
 ```
 
-### 2. Siga as instruções do README do projeto Python
+### Passo 2: Configure e inicie a API Python
 
-Acesse o README do projeto Python e siga as instruções para:
-
-- Instalar as dependências Python
-- Configurar o ambiente
+Siga as instruções detalhadas no README do projeto Python para:
+- Instalar dependências (FastAPI, scikit-learn, pandas, etc.)
+- Configurar o ambiente virtual
+- Carregar o modelo treinado
 - Iniciar o servidor na porta 8000
 
-**Link do projeto:** https://github.com/RavyBomfim/FlightOnTime-DataScience/tree/main/API
+**📚 Link do Projeto:** https://github.com/RavyBomfim/FlightOnTime-DataScience/tree/main/API
 
-### 3. Verifique se a API Python está rodando
+### Passo 3: Verifique se a API está rodando
 
 ```bash
-# Teste se a API Python está respondendo
+# Teste básico
 curl http://localhost:8000
+
+# Deve retornar informações sobre a API
 ```
 
-Somente após a API Python estar rodando, prossiga com a instalação do backend Java abaixo.
+⚠️ **Atenção**: Não prossiga sem a API Python funcionando!
 
 ## 🔧 Instalação e Execução
 
-#### 1. Certifique-se que a API Python está rodando
+### 1️⃣ Certifique-se que a API Python está rodando
 
 ```bash
-# Navegue até o diretório da API Python
-cd FlightOnTime-DataScience/API
-
-# Siga o README do projeto Python para iniciar o servidor
-# A API deve estar rodando em http://localhost:8000
+# Verifique se está respondendo
+curl http://localhost:8000
 ```
 
-#### 2. Clone o repositório do Backend
+### 2️⃣ Clone o repositório
 
 ```bash
-git clone https://github.com/RavyBomfim/FlightOnTime-BackEnd.git
+git clone https://github.com/seu-usuario/FlightOnTime-BackEnd.git
 cd FlightOnTime-BackEnd
 ```
 
-#### 3. Compile o projeto
+### 3️⃣ Compile e execute
 
 **Windows (PowerShell):**
-
 ```powershell
+# Compilar
 .\mvnw.cmd clean install
-```
 
-**Linux/Mac:**
-
-```bash
-./mvnw clean install
-```
-
-#### 4. Execute a aplicação
-
-**Windows (PowerShell):**
-
-```powershell
+# Executar
 .\mvnw.cmd spring-boot:run
 ```
 
 **Linux/Mac:**
-
 ```bash
+# Compilar
+./mvnw clean install
+
+# Executar
 ./mvnw spring-boot:run
 ```
 
-A aplicação estará disponível em: `http://localhost:8080`
+### 4️⃣ Acesse a aplicação
 
-**Nota:** Certifique-se que a API Python está rodando em `http://localhost:8000` antes de iniciar o backend.
+- **API Backend**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **H2 Console**: http://localhost:8080/h2-console
+  - JDBC URL: `jdbc:h2:mem:flightdb`
+  - Username: `sa`
+  - Password: _(vazio)_
 
-## � Autenticação
+## 🔐 Autenticação e Segurança
 
-Esta API utiliza autenticação JWT (JSON Web Token). Para acessar os endpoints protegidos, você precisa:
+A API utiliza **JWT (JSON Web Token)** para autenticação. Todos os endpoints de voos são protegidos.
 
-1. **Registrar um usuário** (endpoint público)
-2. **Fazer login** para obter o token JWT (endpoint público)
-3. **Usar o token** no header `Authorization` para acessar os endpoints protegidos
-
-### Endpoints Públicos (Sem Autenticação)
+### 🔓 Endpoints Públicos (Sem Autenticação)
 
 - `POST /api/auth/register` - Registrar novo usuário
-- `POST /api/auth/login` - Fazer login e obter token JWT
-- `GET /h2-console/**` - Console do banco de dados H2 (apenas desenvolvimento)
+- `POST /api/auth/login` - Fazer login e obter token
+- `GET /h2-console/**` - Console do banco H2 (apenas dev)
+- `GET /swagger-ui.html` - Documentação interativa
 
-### Endpoints Protegidos (Requerem JWT)
+### 🔒 Endpoints Protegidos (Requerem JWT)
 
-- Todos os endpoints `/api/flights/**` requerem autenticação
+Todos os endpoints `/api/flights/**` requerem token JWT no header `Authorization`.
 
-### 1. Registrar Usuário
+### Fluxo de Autenticação
 
-**Endpoint:** `POST /api/auth/register`
+#### 1. Registrar um Usuário
 
-**Request:**
-```json
-{
-  "email": "seu@email.com",
-  "password": "suaSenha123"
-}
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@email.com",
+    "password": "senha123"
+  }'
 ```
 
-**Response:** `200 OK`
+**Response**: `200 OK`
 ```json
 "Usuário registrado com sucesso!"
 ```
 
-### 2. Fazer Login
+#### 2. Fazer Login
 
-**Endpoint:** `POST /api/auth/login`
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@email.com",
+    "password": "senha123"
+  }'
+```
 
-**Request:**
+**Response**: `200 OK`
 ```json
 {
-  "email": "seu@email.com",
-  "password": "suaSenha123"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3VhcmlvQGVtYWlsLmNvbSIsImlhdCI6MTcwNjk5OTk5OX0.signature"
 }
 ```
 
-**Response:** `200 OK`
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
+#### 3. Usar o Token
 
-**Nota:** Copie o token retornado para usar nas próximas requisições.
-
-### 3. Usar o Token nas Requisições
-
-Adicione o token no header `Authorization` com o prefixo `Bearer`:
+Adicione o token no header `Authorization` com prefixo `Bearer`:
 
 ```bash
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-**Exemplo com cURL:**
-```bash
-curl -X POST http://localhost:8080/api/flights/predict \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "airline": "GOL",
-    "originIcao": "SBGR",
-    "destinationIcao": "SBBR",
-    "scheduledDeparture": "2026-01-15T14:30:00"
-  }'
-```
+### ⏱️ Validade do Token
 
-**Exemplo com PowerShell:**
-```powershell
-$headers = @{
-    "Content-Type" = "application/json"
-    "Authorization" = "Bearer SEU_TOKEN_AQUI"
+- **Duração**: 1 hora após login
+- **Renovação**: Faça login novamente para obter novo token
+
+### 🛡️ Recursos de Segurança
+
+- ✅ **Senhas criptografadas** com BCrypt
+- ✅ **Rate Limiting**: 100 requisições/minuto por IP
+- ✅ **CORS configurado** para origens específicas
+- ✅ **Validação de entrada** com regex e Bean Validation
+
+## 📡 Endpoints da API
+
+### 🔮 Predição de Voos
+
+#### POST /api/flights/predict
+
+**Realiza predição de atraso de voo com Machine Learning**
+
+🔒 **Requer autenticação JWT**
+
+**Request:**
+```json
+{
+  "companhia": "G3",
+  "origem": "SBGR",
+  "destino": "SBBR",
+  "data_partida": "2026-01-15T14:30:00"
 }
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
-    -Method POST `
-    -Headers $headers `
-    -Body '{"airline":"GOL","originIcao":"SBGR","destinationIcao":"SBBR","scheduledDeparture":"2026-01-15T14:30:00"}'
 ```
 
-### Segurança
+**Campos:**
+- `companhia` (String, 2-3 chars): Código IATA da companhia (G3, LA, AD, etc.)
+- `origem` (String, 4 chars): Código ICAO do aeroporto de origem (SBGR, SBSP, etc.)
+- `destino` (String, 4 chars): Código ICAO do aeroporto de destino
+- `data_partida` (DateTime): Data/hora de partida no formato ISO 8601
 
-- Tokens JWT expiram em **1 hora**
-- Senhas são armazenadas com **BCrypt** (hash seguro)
-- Rate limiting: **10 requisições por minuto por IP**
-- CORS configurado para permitir origens específicas
-
-## �📡 Endpoints da API
-
-### POST /api/flights/predict
-
-**⚠️ Requer autenticação JWT**
-
-Realiza a predição de atraso de um voo com base nos dados fornecidos.
-
-### GET /api/flights
-
-**⚠️ Requer autenticação JWT**
-
-Retorna a lista de todos os voos cadastrados no banco de dados, ordenados do mais recente para o mais antigo.
-
-**URL:** `http://localhost:8080/api/flights`
-
-**Method:** `GET`
-
-**Headers:**
-```
-Authorization: Bearer {seu_token_jwt}
+**Response:**
+```json
+{
+  "predict": {
+    "predictionResult": "Atrasado",
+    "predictionProbability": 0.78
+  },
+  "weather": {
+    "temperature": "25.5°C",
+    "precipitation": "2.0mm",
+    "windSpeed": "15.0 km/h"
+  }
+}
 ```
 
-**Response:** `200 OK`
+**Validações automáticas:**
+- ✅ Formato de códigos (regex validation)
+- ✅ Existência da companhia aérea no banco
+- ✅ Existência dos aeroportos no banco
+- ✅ **Cálculo automático de distância** (Haversine)
+- ✅ Dados meteorológicos em tempo real
 
+---
+
+### 🗂️ Consulta de Voos
+
+#### GET /api/flights
+
+Lista todos os voos registrados (ordenados por data de criação).
+
+🔒 **Requer autenticação JWT**
+
+**Response:**
 ```json
 [
   {
-    "id": 10,
-    "airline": "Azul",
-    "origin": "SSA",
-    "destination": "GRU",
-    "distanceKm": 1960,
-    "scheduledDeparture": "2025-12-26T06:00:00",
-    "scheduledArrival": "2025-12-26T08:40:00",
-    "predictionResult": "Pontual",
-    "predictionProbability": 0.81,
-    "createdAt": "2025-12-22T16:22:42.876429",
-    "updatedAt": "2025-12-22T16:22:42.876429"
+    "id": 123,
+    "airline": "G3",
+    "origin": "SBGR",
+    "destination": "SBBR",
+    "distanceMeters": 872000,
+    "scheduledDeparture": "2026-01-15T14:30:00",
+    "predictionResult": "Atrasado",
+    "predictionProbability": 0.78,
+    "createdAt": "2026-01-13T10:30:00",
+    "updatedAt": "2026-01-13T10:30:00"
   }
 ]
 ```
 
-### GET /api/flights/{id}
+#### GET /api/flights/{id}
 
-Busca um voo específico pelo ID.
+Busca voo específico por ID.
 
-**URL:** `http://localhost:8080/api/flights/1`
+#### GET /api/flights/search/origin?origin={code}
 
-**Method:** `GET`
+Busca voos por aeroporto de origem.
 
-**Response:** `200 OK`
+**Exemplo:** `/api/flights/search/origin?origin=SBGR`
 
-### GET /api/flights/search/origin?origin={code}
-
-Busca voos por aeroporto de origem (ex: GRU, CGH, SDU).
-
-**URL:** `http://localhost:8080/api/flights/search/origin?origin=GRU`
-
-**Method:** `GET`
-
-### GET /api/flights/search/destination?destination={code}
+#### GET /api/flights/search/destination?destination={code}
 
 Busca voos por aeroporto de destino.
 
-**URL:** `http://localhost:8080/api/flights/search/destination?destination=BSB`
+**Exemplo:** `/api/flights/search/destination?destination=SBBR`
 
-**Method:** `GET`
+#### GET /api/flights/search/route?origin={code}&destination={code}
 
-### GET /api/flights/search/ontime
+Busca voos por rota específica (origem + destino).
 
-Retorna todos os voos com predição de pontualidade (ontime).
+**Exemplo:** `/api/flights/search/route?origin=SBGR&destination=SBBR`
 
-**URL:** `http://localhost:8080/api/flights/search/ontime`
+#### GET /api/flights/search/ontime
 
-**Method:** `GET`
+Retorna todos os voos com predição de **pontualidade**.
 
-### GET /api/flights/search/route?origin={code}&destination={code}
+#### GET /api/flights/search/delayed
 
-Busca voos por rota específica (origem e destino).
+Retorna todos os voos com predição de **atraso**.
 
-**URL:** `http://localhost:8080/api/flights/search/route?origin=GRU&destination=CGH`
-
-**Method:** `GET`
-
-### GET /api/flights/search/delayed
-
-Retorna todos os voos com predição de atraso.
-
-**URL:** `http://localhost:8080/api/flights/search/delayed`
-
-**Method:** `GET`
-
-### DELETE /api/flights/{id}
+#### DELETE /api/flights/{id}
 
 Remove um voo do banco de dados.
-
-**URL:** `http://localhost:8080/api/flights/1`
-
-**Method:** `DELETE`
 
 **Response:** `204 No Content`
 
 ---
 
-### POST /api/flights/predict - Detalhes
+### 📊 Estatísticas e Análises
 
-**⚠️ Requer autenticação JWT**
+#### GET /api/flights/stats
 
-Realiza a predição de atraso de um voo com base nos dados fornecidos.
+**Retorna estatísticas completas agregadas de todos os voos**
 
-#### Request
+🔒 **Requer autenticação JWT**
 
-**URL:** `http://localhost:8080/api/flights/predict`
-
-**Method:** `POST`
-
-**Headers:**
-```
-Content-Type: application/json
-Authorization: Bearer {seu_token_jwt}
-```
-
-**Body:**
-
+**Response:**
 ```json
 {
-  "airline": "GOL",
-  "originIcao": "SBGR",
-  "destinationIcao": "SBBR",
-  "scheduledDeparture": "2026-01-15T14:30:00"
-}
-```
-
-#### Parâmetros
-
-| Campo                  | Tipo     | Obrigatório | Descrição                                                          |
-| ---------------------- | -------- | ----------- | ------------------------------------------------------------------ |
-| `airline`              | String   | Sim         | Código da companhia aérea (3 caracteres). Ex: GOL, LATAM, Azul    |
-| `originIcao`           | String   | Sim         | Código ICAO do aeroporto de origem (4 caracteres). Ex: SBGR, SBBR  |
-| `destinationIcao`      | String   | Sim         | Código ICAO do aeroporto de destino (4 caracteres). Ex: SBSP, SBGL |
-| `scheduledDeparture`   | DateTime | Sim         | Data e hora de partida (formato ISO 8601)                          |
-
-**Nota:** A distância entre aeroportos é calculada automaticamente usando a fórmula de Haversine com base nas coordenadas geográficas.
-
-#### Response
-
-**Status:** `200 OK`
-
-**Body:**
-
-```json
-{
-  "predict": {
-    "previsao": true,
-    "probabilidade": 0.78
+  "overall": {
+    "totalFlights": 150,
+    "totalDelayed": 45,
+    "totalOnTime": 105,
+    "delayRate": 30.0
   },
-  "weather": {
-    "temperatura": "25.5°C",
-    "precipitacao": "0.0mm",
-    "vento": "12.5 km/h"
-  }
+  "byDate": [
+    {
+      "date": "2026-01-15",
+      "totalFlights": 25,
+      "delayedFlights": 8,
+      "delayRate": 32.0
+    }
+  ],
+  "byAirline": [
+    {
+      "airline": "G3",
+      "totalFlights": 50,
+      "delayedFlights": 15,
+      "delayRate": 30.0
+    }
+  ],
+  "byOrigin": [
+    {
+      "origin": "SBGR",
+      "totalFlights": 40,
+      "delayedFlights": 12,
+      "delayRate": 30.0
+    }
+  ],
+  "byDestination": [
+    {
+      "destination": "SBBR",
+      "totalFlights": 35,
+      "delayedFlights": 10,
+      "delayRate": 28.5
+    }
+  ],
+  "byRoute": [
+    {
+      "route": "SBGR-SBBR",
+      "totalFlights": 20,
+      "delayedFlights": 6,
+      "delayRate": 30.0
+    }
+  ]
 }
 ```
 
-**Campos de resposta:**
+**Análises disponíveis:**
+- 📈 Estatísticas gerais (total, atrasados, pontuais, taxa de atraso)
+- 📅 Análise por data
+- ✈️ Análise por companhia aérea
+- 🛫 Análise por aeroporto de origem
+- 🛬 Análise por aeroporto de destino
+- 🛤️ Análise por rota completa
 
-| Campo                   | Tipo    | Descrição                                  |
-| ----------------------- | ------- | ------------------------------------------ |
-| `predict.previsao`      | Boolean | true = Atrasado, false = Pontual           |
-| `predict.probabilidade` | Double  | Probabilidade de atraso (0.0 a 1.0)        |
-| `weather.temperatura`   | String  | Temperatura no aeroporto de origem         |
-| `weather.precipitacao`  | String  | Precipitação no aeroporto de origem        |
-| `weather.vento`         | String  | Velocidade do vento no aeroporto de origem |
+**Performance:** Cache automático para respostas rápidas
 
-**Validações realizadas:**
+---
 
-- Verifica se o código da companhia aérea existe no banco de dados
-- Verifica se o código do aeroporto de origem existe no banco de dados
-- Verifica se o código do aeroporto de destino existe no banco de dados
-- Calcula automaticamente a distância entre os aeroportos usando Haversine
-- Busca dados meteorológicos para o aeroporto de origem
+### 🏢 Consulta de Companhias e Aeroportos
 
-## 🧪 Exemplos de Chamadas
+#### GET /api/airlines
 
-### 1. Registrar Usuário
+Lista todas as companhias aéreas cadastradas.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "airlineCode": "G3",
+    "airlineName": "Gol Linhas Aéreas"
+  },
+  {
+    "id": 2,
+    "airlineCode": "LA",
+    "airlineName": "LATAM Airlines"
+  }
+]
+```
+
+#### GET /api/airlines/{code}
+
+Busca companhia aérea por código.
+
+#### GET /api/airports
+
+Lista todos os aeroportos cadastrados.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "airportCode": "SBGR",
+    "airportName": "Aeroporto Internacional de Guarulhos",
+    "airportCity": "São Paulo",
+    "airportState": "SP",
+    "latitude": -23.432075,
+    "longitude": -46.469511
+  }
+]
+```
+
+#### GET /api/airports/{code}
+
+Busca aeroporto por código ICAO.
+
+## 🧪 Exemplos Práticos
+
+### 1️⃣ Registrar e Fazer Login
 
 **cURL:**
 ```bash
+# Registrar
 curl -X POST http://localhost:8080/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "teste@email.com",
-    "password": "senha123"
-  }'
-```
+  -d '{"email": "usuario@email.com", "password": "senha123"}'
 
-**PowerShell:**
-```powershell
-$body = @{
-    email = "teste@email.com"
-    password = "senha123"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/auth/register" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body $body
-```
-
-### 2. Fazer Login e Obter Token
-
-**cURL:**
-```bash
+# Login
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
+  -d '{"email": "usuario@email.com", "password": "senha123"}'
+```
+
+**PowerShell:**
+```powershell
+# Registrar
+$body = @{email = "usuario@email.com"; password = "senha123"} | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:8080/api/auth/register" -Method POST -ContentType "application/json" -Body $body
+
+# Login e salvar token
+$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method POST -ContentType "application/json" -Body $body
+$token = $response.token
+```
+
+### 2️⃣ Fazer Predição de Voo
+
+**cURL:**
+```bash
+curl -X POST http://localhost:8080/api/flights/predict \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN" \
   -d '{
-    "email": "teste@email.com",
-    "password": "senha123"
+    "companhia": "G3",
+    "origem": "SBGR",
+    "destino": "SBBR",
+    "data_partida": "2026-01-20T14:30:00"
   }'
 ```
 
 **PowerShell:**
 ```powershell
-$body = @{
-    email = "teste@email.com"
-    password = "senha123"
-} | ConvertTo-Json
-
-$response = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body $body
-
-# Salvar o token para usar nas próximas requisições
-$token = $response.token
-Write-Host "Token: $token"
-```
-
-### 3. Fazer Predição de Voo (Com Token)
-
-**Voo com alta probabilidade de atraso:**
-
-**cURL:**
-```bash
-# Substitua SEU_TOKEN_AQUI pelo token recebido no login
-curl -X POST http://localhost:8080/api/flights/predict \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "airline": "GOL",
-    "originIcao": "SBGL",
-    "destinationIcao": "SBGR",
-    "scheduledDeparture": "2026-01-20T18:00:00"
-  }'
-```
-
-**PowerShell:**
-```bash
-# Usando o token salvo anteriormente
 $headers = @{
     "Content-Type" = "application/json"
     "Authorization" = "Bearer $token"
 }
-
 $body = @{
-    airline = "GOL"
-    originIcao = "SBGL"
-    destinationIcao = "SBGR"
-    scheduledDeparture = "2026-01-20T18:00:00"
+    companhia = "G3"
+    origem = "SBGR"
+    destino = "SBBR"
+    data_partida = "2026-01-20T14:30:00"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" `
-  -Method POST `
-  -Headers $headers `
-  -Body $body
+Invoke-RestMethod -Uri "http://localhost:8080/api/flights/predict" -Method POST -Headers $headers -Body $body
 ```
 
-**Voo com baixa probabilidade de atraso:**
-
-**cURL:**
-```bash
-curl -X POST http://localhost:8080/api/flights/predict \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
-  -d '{
-    "airline": "Azul",
-    "originIcao": "SBGR",
-    "destinationIcao": "SBSP",
-    "scheduledDeparture": "2026-01-18T08:30:00"
-  }'
-```
-
-### Usando JavaScript (Fetch API)
-
+**JavaScript (Fetch):**
 ```javascript
-fetch("http://localhost:8080/api/flights/predict", {
+const response = await fetch("http://localhost:8080/api/flights/predict", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+    "Authorization": "Bearer " + token
   },
   body: JSON.stringify({
-    companhia: "AZU",
+    companhia: "G3",
     origem: "SBGR",
-    destino: "SBRF",
-    data_partida: "2025-12-30T11:20:00",
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => console.log(data))
-  .catch((error) => console.error("Erro:", error));
+    destino: "SBBR",
+    data_partida: "2026-01-20T14:30:00"
+  })
+});
+const data = await response.json();
+console.log(data);
 ```
 
-### Usando Python (requests)
-
+**Python:**
 ```python
 import requests
-import json
 
-url = "http://localhost:8080/api/flights/predict"
-headers = {"Content-Type": "application/json"}
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {token}"
+}
 data = {
-    "companhia": "TAM",
+    "companhia": "G3",
     "origem": "SBGR",
-    "destino": "SBFZ",
-    "data_partida": "2025-12-22T13:15:00"
+    "destino": "SBBR",
+    "data_partida": "2026-01-20T14:30:00"
 }
 
-response = requests.post(url, headers=headers, data=json.dumps(data))
+response = requests.post(
+    "http://localhost:8080/api/flights/predict",
+    headers=headers,
+    json=data
+)
 print(response.json())
 ```
 
-## ⚠️ Validações e Erros
+### 3️⃣ Consultar Estatísticas
 
-### Erros de Validação
+```bash
+curl -X GET http://localhost:8080/api/flights/stats \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
 
-A API valida todos os campos de entrada. Em caso de erro, retorna:
+### 4️⃣ Listar Voos com Atraso
+
+```bash
+curl -X GET http://localhost:8080/api/flights/search/delayed \
+  -H "Authorization: Bearer SEU_TOKEN"
+```
+
+## ⚠️ Tratamento de Erros
+
+### Validações de Formato
 
 **Status:** `400 Bad Request`
-
-**Exemplo de erro:**
 
 ```json
 {
@@ -546,167 +564,206 @@ A API valida todos os campos de entrada. Em caso de erro, retorna:
   "detail": "Invalid request content.",
   "instance": "/api/flights/predict",
   "errors": {
-    "companhia": "O nome da companhia aérea deve ter 3 caracteres",
-    "origem": "O código do aeroporto de origem deve ter 4 caracteres"
+    "companhia": "Código da companhia aérea deve conter apenas letras maiúsculas e números",
+    "origem": "Código do aeroporto de origem deve conter apenas letras maiúsculas"
   }
 }
 ```
 
-### Possíveis Mensagens de Validação
+### Validações de Negócio
 
-**Validações de formato:**
+**Status:** `400 Bad Request`
 
-- **companhia:** "A companhia aérea é obrigatória" ou "O nome da companhia aérea deve ter 3 caracteres"
-- **origem:** "O aeroporto de origem é obrigatório" ou "O código do aeroporto de origem deve ter 4 caracteres"
-- **destino:** "O aeroporto de destino é obrigatório" ou "O código do aeroporto de destino deve ter 4 caracteres"
-- **data_partida:** "A data de partida é obrigatória"
-
-**Validações de existência (Runtime):**
-
-- **Companhia aérea inválida:** "Companhia aérea inválida: XXX" (quando o código não existe no banco)
-- **Aeroporto de origem inválido:** "Aeroporto de origem não encontrado: XXXX" (quando o código não existe no banco)
-- **Aeroporto de destino inválido:** "Aeroporto de destino não encontrado: XXXX" (quando o código não existe no banco)
-
-## 🔍 Como Funciona
-
-### Arquitetura
-
-O projeto segue uma arquitetura em camadas:
-
-```
-Controller (FlightController)
-    ↓
-Service (PredictionService)
-    ↓
-Integration (PredictionClient / WeatherService)
-    ↓
-Repository (FlightRepository / AirportRepository / AirlineRepository)
-    ↓
-DTOs (FlightRequestDTO / FlightResponseDTO / PredictionDTO / WeatherDTO)
+```json
+{
+  "message": "Companhia aérea inválida: XXX"
+}
 ```
 
-### Fluxo de Predição
+**Status:** `404 Not Found`
 
-1. **Validação de Entrada:** Valida formato dos códigos (3 caracteres para companhia, 4 para aeroportos)
-2. **Validação de Existência:** Verifica se companhia aérea e aeroportos existem no banco de dados
-3. **Cálculo de Distância:** Usa fórmula de Haversine para calcular distância entre aeroportos
-4. **Chamada à API Python:** Envia dados para o modelo de Machine Learning
-5. **Busca de Dados Meteorológicos:** Obtém condições climáticas do aeroporto de origem
-6. **Persistência:** Salva a predição no banco de dados
-7. **Resposta:** Retorna predição e dados meteorológicos ao cliente
+```json
+{
+  "message": "Aeroporto de origem não encontrado: XXXX"
+}
+```
 
-### Integração com Machine Learning
+### Erro de Autenticação
 
-A aplicação integra com uma API Python (FastAPI) que executa o modelo de Machine Learning treinado:
+**Status:** `401 Unauthorized`
 
-- Utiliza RestClient para comunicação HTTP
-- Envia: companhia, origem, destino, data, dia da semana e distância
-- Recebe: predição (boolean) e probabilidade (double)
+```json
+{
+  "message": "Token inválido ou expirado"
+}
+```
 
-### CORS
+### API Python Indisponível
 
-A aplicação está configurada para aceitar requisições das seguintes origens:
+**Status:** `503 Service Unavailable`
 
-- `http://localhost:3000` (React - Create React App)
-- `http://localhost:5173` (Vite)
+```json
+{
+  "message": "Serviço de predição indisponível. Verifique se a API Python está rodando."
+}
+```
 
-Métodos permitidos: `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS`
+## 🗄️ Banco de Dados
 
-## 🛠️ Configuração
+### H2 Database (Desenvolvimento)
+
+- **Tipo**: In-memory (dados são perdidos ao reiniciar)
+- **Console Web**: http://localhost:8080/h2-console
+- **JDBC URL**: `jdbc:h2:mem:flightdb`
+- **Username**: `sa`
+- **Password**: _(vazio)_
+
+### Schema
+
+**Entidades:**
+- `airlines` - Companhias aéreas (G3, LA, AD, etc.)
+- `airports` - Aeroportos com coordenadas geográficas
+- `flights` - Histórico de predições
+- `users` - Usuários cadastrados
+
+**Dados Pré-carregados:**
+- 7 companhias aéreas brasileiras
+- 95 aeroportos brasileiros com coordenadas
+
+## 🧪 Testes
+
+### Executar Testes
+
+```bash
+# Todos os testes
+.\mvnw.cmd test
+
+# Gerar relatório de cobertura
+.\mvnw.cmd clean test jacoco:report
+```
+
+### Cobertura de Testes
+
+- **Total**: 39 testes automatizados
+- **Services**: 58% de cobertura
+  - WeatherService: 100%
+  - PredictionService: 95%
+  - FlightService: 45%
+- **Controllers**: 36% de cobertura
+- **Security**: 77% de cobertura
+
+**Tipos de Testes:**
+- ✅ Testes unitários (services)
+- ✅ Testes de integração (API completa)
+- ✅ Testes de validação (inputs inválidos)
+- ✅ Testes de segurança (JWT)
+
+## 📚 Documentação Adicional
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+- **Arquitetura**: Ver [ARQUITETURA.md](ARQUITETURA.md)
+- **Changelog**: Ver [CHANGELOG.md](CHANGELOG.md)
+- **Status do Projeto**: Ver [STATUS.md](STATUS.md)
+
+## 🔧 Configuração Avançada
+
+### Variáveis de Ambiente
+
+```properties
+# Python API
+PYTHON_API_URL=http://localhost:8000
+PYTHON_API_TIMEOUT=30
+
+# JWT
+JWT_SECRET=seu_secret_minimo_32_caracteres
+
+# Server
+SERVER_PORT=8080
+
+# Database (para produção com PostgreSQL)
+DATABASE_URL=jdbc:postgresql://localhost:5432/flightontime
+DATABASE_USERNAME=usuario
+DATABASE_PASSWORD=senha
+```
 
 ### application.properties
 
 ```properties
+# Application
 spring.application.name=Flight on Time
 server.port=8080
+
+# Python API Integration
+python.api.url=${PYTHON_API_URL:http://localhost:8000}
+python.api.timeout=30
+
+# JWT Configuration
+jwt.secret=${JWT_SECRET:mySecretKeyForJWTTokenGeneration12345678901234567890}
+jwt.expiration=3600000
+
+# Database H2 (Development)
+spring.datasource.url=jdbc:h2:mem:flightdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.sql.init.mode=always
+
+# H2 Console
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# Error Handling
 server.error.include-message=always
 server.error.include-binding-errors=always
 spring.mvc.problemdetails.enabled=true
 
-# Python API Configuration
-python.api.url=http://localhost:8000
-python.api.timeout=30
+# Logging
+logging.level.com.flightontime.api=INFO
+logging.level.org.springframework.web=INFO
+
+# Actuator
+management.endpoints.web.exposure.include=health,info
 ```
 
-### Variáveis de Ambiente (Docker)
+## 🐛 Troubleshooting
 
-Ao executar com Docker, você pode configurar as seguintes variáveis:
+### Problema: "API Python não responde"
 
-| Variável             | Padrão                  | Descrição                               |
-| -------------------- | ----------------------- | --------------------------------------- |
-| `PYTHON_API_URL`     | `http://localhost:8000` | URL da API Python de predição           |
-| `PYTHON_API_TIMEOUT` | `30`                    | Timeout em segundos para chamadas à API |
-| `JAVA_OPTS`          | `-Xmx512m -Xms256m`     | Opções da JVM (memória, GC, etc.)       |
+**Solução:**
+1. Verifique se a API Python está rodando: `curl http://localhost:8000`
+2. Verifique os logs do serviço Python
+3. Confirme que a porta 8000 está livre: `netstat -ano | findstr :8000` (Windows)
 
-**Exemplo de uso:**
+### Problema: "Token JWT expirou"
 
-```bash
-docker run -d \
-  -p 8080:8080 \
-  -e PYTHON_API_URL=http://python-api:8000 \
-  -e PYTHON_API_TIMEOUT=60 \
-  -e JAVA_OPTS="-Xmx1g -Xms512m" \
-  flightontime-backend
-```
+**Solução:**
+- Tokens expiram em 1 hora
+- Faça login novamente para obter novo token
 
-### Alterar a Porta
+### Problema: "Companhia/Aeroporto não encontrado"
 
-Para executar em outra porta, modifique o arquivo `src/main/resources/application.properties`:
+**Solução:**
+- Verifique se o código está correto (2-3 chars para companhia, 4 chars para aeroporto)
+- Consulte `/api/airlines` e `/api/airports` para ver códigos disponíveis
+- Use códigos ICAO para aeroportos (SBGR, não GRU)
 
-```properties
-server.port=9090
-```
+### Problema: "Rate limit exceeded"
 
-## 📊 Monitoramento
+**Solução:**
+- Aguarde 1 minuto (limite: 100 req/min por IP)
+- Para testes intensivos, desabilite o rate limit temporariamente
 
-O Spring Actuator está habilitado. Endpoints de monitoramento disponíveis:
+## 🏗️ Arquitetura
 
-- **Health Check:** `http://localhost:8080/actuator/health`
-- **Info:** `http://localhost:8080/actuator/info`
-
-## 📚 Documentação da API
-
-A documentação interativa da API está disponível através do Swagger UI:
-
-- **Swagger UI:** `http://localhost:8080/swagger-ui/index.html`
-- **OpenAPI JSON:** `http://localhost:8080/api-docs`
-
-No Swagger UI você pode:
-
-- Visualizar todos os endpoints disponíveis
-- Testar as requisições diretamente no navegador
-- Ver exemplos de request e response
-- Consultar os schemas dos DTOs
-
-## 🏗️ Estrutura do Projeto
+### Diagrama de Camadas
 
 ```
-src/main/java/com/flightontime/api/
-├── FlightOnTimeApplication.java    # Classe principal
-├── config/
-│   ├── CorsConfig.java             # Configuração de CORS
-│   └── RestClientConfig.java       # Configuração do RestClient
-├── controller/
-│   └── FlightController.java       # Controlador REST
-├── dto/
-│   ├── FlightRequestDTO.java       # DTO de requisição
-│   └── FlightResponseDTO.java      # DTO de resposta
-└── service/
-    └── PredictionService.java      # Lógica de predição e integração com Python
-```
-
-### Health Check
-
-O container inclui health check automático que verifica o endpoint `/actuator/health` a cada 30 segundos.
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto foi desenvolvido para o hackaton da Oracle Next Education (ONE).
+┌─────────────────────────────────────┐
+│     PRESENTATION LAYER              │
+│  Controllers + DTOs + Validation    │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│      BUSINESS LOGIC LAYER           │
+│  Services + Business Rules          │

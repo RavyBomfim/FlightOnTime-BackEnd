@@ -22,12 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j //logger
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private final Bucket bucket = Bucket.builder()
-        .addLimit(Bandwidth.simple(2, Duration.ofMinutes(1)))
-        .build();
-
-        private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
-        //Mapa para armazenar buckets por IP (futuro aprimoramento)
+    private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+    //Mapa para armazenar buckets por IP
         @Override
         protected void doFilterInternal(HttpServletRequest request, 
                                         HttpServletResponse response, 

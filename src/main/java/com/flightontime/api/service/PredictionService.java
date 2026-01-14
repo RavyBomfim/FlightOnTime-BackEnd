@@ -66,7 +66,7 @@ public class PredictionService {
                                 flightRequestDTO.airline(),
                                 flightRequestDTO.origin(),
                                 flightRequestDTO.destination(),
-                                flightRequestDTO.scheduledDeparture().toLocalDate(),
+                                flightRequestDTO.scheduledDeparture(),
                                 distanceMeters);
 
                 log.debug("Enviando payload para API Python: {}", payload);

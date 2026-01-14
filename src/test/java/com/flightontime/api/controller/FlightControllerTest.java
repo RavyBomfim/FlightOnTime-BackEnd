@@ -49,10 +49,10 @@ private JwtService jwtService;
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "airline": "GOL",
-                                  "origin": "SBGR",
-                                  "destination": "SBBR",
-                                  "scheduledDeparture": "2026-01-15T14:30:00"
+                                  "companhia": "GOL",
+                                  "origem": "SBGR",
+                                  "destino": "SBBR",
+                                  "data_partida": "2026-01-15T14:30:00"
                                 }
                                 """))
                 .andExpect(status().isOk())
