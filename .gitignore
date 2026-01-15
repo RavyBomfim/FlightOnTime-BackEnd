@@ -32,15 +32,15 @@ build/
 ### VS Code ###
 .vscode/
 
-### Docker ###
-.dockerignore
-Dockerfile
-.docker-compose.yml
-docker-compose.yml
-DOCKER_NETWORKING.md
+### Environment Variables ###
+.env
+.env.local
+.env.*.local
+!.env.docker
+!.env.example
 
+### Project Files ###
 projeto.txt
 .github/java-upgrade
 ultimo_commit.md
-.env
 commit.md
