@@ -44,7 +44,8 @@ public class SecurityConfig {
                     "/h2-console/**", 
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/swagger-ui.html").permitAll()
+                    "/swagger-ui.html",
+                    "/actuator/**").permitAll()
                 //.requestMatchers("/stats").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
