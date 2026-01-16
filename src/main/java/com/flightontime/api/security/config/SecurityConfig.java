@@ -70,7 +70,8 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://134.65.49.222:3000"
         ));
 
         config.setAllowedMethods(List.of(

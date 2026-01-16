@@ -27,9 +27,6 @@ public class PredictionClient {
         
         @Value("${python.api.url:http://localhost:8000}")
         private String pythonApiUrl;
-        
-        @Value("${python.api.token:59f3336ed2b51d151bc6159926347cb0ffa10f8cef42f231de36d687eb459a72}")
-        private String pythonApiToken;
 
         public PredictionResponse predict(PredictionRequest request) {
                 try {
@@ -37,7 +34,7 @@ public class PredictionClient {
                         
                         HttpHeaders headers = new HttpHeaders();
                         headers.setContentType(MediaType.APPLICATION_JSON);
-                        headers.set("Authorization", pythonApiToken);
+                        headers.set("Authorization", "59f3336ed2b51d151bc6159926347cb0ffa10f8cef42f231de36d687eb459a72");
                         
                         HttpEntity<PredictionRequest> entity = new HttpEntity<>(request, headers);
                         
