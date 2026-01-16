@@ -35,9 +35,11 @@ build/
 ### Environment Variables ###
 .env
 .env.local
+.env.prod
 .env.*.local
 !.env.docker
 !.env.example
+!.env.prod.example
 
 ### Project Files ###
 projeto.txt

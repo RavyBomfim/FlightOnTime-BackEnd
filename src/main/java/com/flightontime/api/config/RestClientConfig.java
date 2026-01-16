@@ -22,6 +22,9 @@ public class RestClientConfig {
     @Value("${python.api.timeout:30}")
     private int timeoutSeconds;
 
+    @Value("${python.api.token}")
+    private String pythonApiToken;
+
     @Bean
     public RestClient pythonApiClient() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -37,7 +40,7 @@ public class RestClientConfig {
                 .messageConverters(converters -> {
                     converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
                 })
-                .defaultHeader("Authorization", "59f3336ed2b51d151bc6159926347cb0ffa10f8cef42f231de36d687eb459a72")
+                .defaultHeader("Authorization", pythonApiToken)
                 .build();
     }
 
