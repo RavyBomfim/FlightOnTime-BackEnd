@@ -8,6 +8,7 @@ import com.flightontime.api.integration.weather.dto.OpenMeteoResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -19,6 +20,10 @@ public class WeatherClient {
     private final RestTemplate restTemplate;
     private final String weatherApiUrl;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    // Open-Meteo API date limits
+    private static final LocalDate MIN_DATE = LocalDate.of(2025, 10, 15);
+    private static final LocalDate MAX_DATE = LocalDate.of(2026, 1, 31);
 
     public WeatherClient(
             RestTemplate restTemplate,
@@ -28,6 +33,15 @@ public class WeatherClient {
     }
 
     public OpenMeteoResponse getWeatherForecast(double latitude, double longitude, LocalDateTime dateTime) {
+        LocalDate requestDate = dateTime.toLocalDate();
+        
+        // Validate date range - return null if out of range
+        if (requestDate.isBefore(MIN_DATE) || requestDate.isAfter(MAX_DATE)) {
+            log.warn("Requested date {} is outside API allowed range ({} to {}). Returning null.", 
+                    requestDate, MIN_DATE, MAX_DATE);
+            return null;
+        }
+        
         String date = dateTime.format(DATE_FORMATTER);
         int hour = dateTime.getHour();
         

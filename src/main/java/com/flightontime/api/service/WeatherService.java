@@ -37,6 +37,12 @@ public class WeatherService {
                 airport.getAirportLongitude(),
                 dateTime);
 
+        // Return null if weather data is unavailable (date out of range)
+        if (weatherResponse == null) {
+            log.info("Weather data unavailable for date: {}", dateTime);
+            return null;
+        }
+
         return formatWeatherData(weatherResponse, dateTime);
     }
 
